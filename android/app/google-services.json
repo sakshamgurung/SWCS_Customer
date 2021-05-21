@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "89603534900",
+    "project_id": "swcs-customer",
+    "storage_bucket": "swcs-customer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89603534900:android:b36fa8e1f33fef90441a61",
+        "android_client_info": {
+          "package_name": "com.swcs_customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "89603534900-o1h2qnjhihf9au142a0b06ombujla04h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRSRe6zij5e-XUMGwRHhdgyN0IEWMOH3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "89603534900-o1h2qnjhihf9au142a0b06ombujla04h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
