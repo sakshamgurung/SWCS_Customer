@@ -1,8 +1,10 @@
 import _ from 'lodash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwtDecode from 'jwt-decode';
 
 import {loginInfo} from '../../temp/loginData';
 import {AccountUrl, Client} from 'api';
+import {requestErrorLog} from 'util/log';
 
 export const types = {
   DEFAULT: 'auth/default',
@@ -184,23 +186,18 @@ const thunkLogin = () => async (dispatch, getState) => {
       const authToken = loginRes.data.token.authToken;
       const refreshToken = loginRes.data.token.refreshToken;
       if (authToken && refreshToken) {
+        const authTokenDecoded = jwtDecode(authToken);
         await AsyncStorage.setItem('authToken', authToken);
         await AsyncStorage.setItem('refreshToken', refreshToken);
+        await AsyncStorage.setItem('customerId', authTokenDecoded.user);
+        await AsyncStorage.setItem('email', authTokenDecoded.email);
       } else {
         throw new Error('token is empty');
       }
       dispatch(loginSuccess());
     }
   } catch (err) {
-    if (err.response) {
-      console.log('data:', err.response.data);
-      console.log('status:', err.response.status);
-      console.log('header:', err.response.header);
-    } else if (err.request) {
-      console.log('err.request:', err.request);
-    } else {
-      console.log('Error:', err.message);
-    }
+    requestErrorLog(err);
     dispatch(loginFailed("Email or password doesn't matched"));
   }
 };
@@ -219,15 +216,7 @@ const thunkSignup = () => async (dispatch, getState) => {
       dispatch(signupSuccess('Account created. Please goto login page now.'));
     }
   } catch (err) {
-    if (err.response) {
-      console.log('data:', err.response.data);
-      console.log('status:', err.response.status);
-      console.log('header:', err.response.header);
-    } else if (err.request) {
-      console.log('err.request:', err.request);
-    } else {
-      console.log('Error:', err.message);
-    }
+    requestErrorLog(err);
     dispatch(signupFailed('Email or mobile number already exist'));
   }
 };

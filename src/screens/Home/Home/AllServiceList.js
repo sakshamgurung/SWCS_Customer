@@ -36,8 +36,6 @@ export default function AllServiceList({data, refreshData}) {
         />
         <Text>{item.companyId._id}</Text>
         <Text>{item.companyName}</Text>
-        <Text>{item.companyType} company</Text>
-        <Text>{item.desc}</Text>
       </TouchableOpacity>
     </CardSection>
   );

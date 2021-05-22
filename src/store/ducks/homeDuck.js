@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwtDecode from 'jwt-decode';
 
 import {navigate} from '../navigationService';
 import {requestErrorLog} from 'util/log';
@@ -303,9 +302,7 @@ const thunkFetchHomeListData = () => async dispatch => {
   try {
     dispatch(fetchHomeListData());
 
-    let authToken = await AsyncStorage.getItem('authToken');
-    authToken = jwtDecode(authToken);
-    const customerId = authToken.user;
+    const customerId = await AsyncStorage.getItem('customerId');
 
     const [allServiceRes, requestRes, subscriptionRes] = await Promise.all([
       Client.get(CompanyUrl.getAll('company-detail')),
@@ -347,9 +344,7 @@ const thunkFetchListItemData =
   (arrayIndex, listItemType, refId) => async (dispatch, getState) => {
     try {
       dispatch(fetchListItemData());
-      let authToken = await AsyncStorage.getItem('authToken');
-      authToken = jwtDecode(authToken);
-      const customerId = authToken.user;
+      const customerId = await AsyncStorage.getItem('customerId');
 
       if (listItemType == 'aboutCompany') {
         const companyId = refId;
@@ -408,9 +403,7 @@ const thunkPostCustomerRequest =
     try {
       dispatch(postCustomerRequest());
 
-      let authToken = await AsyncStorage.getItem('authToken');
-      authToken = jwtDecode(authToken);
-      const customerId = authToken.user;
+      const customerId = await AsyncStorage.getItem('customerId');
 
       const customerRequest = _.cloneDeep(getState().home.customerRequest);
       customerRequest.companyId = companyId;
