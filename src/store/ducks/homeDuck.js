@@ -145,9 +145,9 @@ export default function reducer(state = initialState, action) {
     }
 
     case types.POST_CUSTOMER_REQUEST_SUCCESS: {
-      const {msg, usedCompanyServices} = action.payload;
+      const {msg, companyServicesAndStatus} = action.payload;
       const listItemData = _.cloneDeep(state.listItemData);
-      listItemData.usedCompanyServices = usedCompanyServices;
+      listItemData.companyServicesAndStatus = companyServicesAndStatus;
       return {
         ...state,
         loading: false,
@@ -359,7 +359,7 @@ const thunkFetchListItemData =
               CompanyUrl.getByRef('company-service-detail', 'companyId', refId),
             ),
             Client.post(UtilActionUrl.verify(), {
-              type: 'usedCompanyServices',
+              type: 'companyServicesAndStatus',
               customerId,
               companyId,
             }),
@@ -370,7 +370,8 @@ const thunkFetchListItemData =
           fetchListItemDataSuccess({
             data: {
               companyServiceDetail: companyServiceDetailRes.data,
-              usedCompanyServices: utilActionRes.data.usedCompanyServices,
+              companyServicesAndStatus:
+                utilActionRes.data.companyServicesAndStatus,
               wasteList: wasteListRes.data,
             },
           }),
@@ -416,24 +417,26 @@ const thunkPostCustomerRequest =
       customerRequest.customerId = customerId;
       customerRequest.requestType = serviceType;
 
-      const usedCompanyServices = _.cloneDeep(
-        getState().home.listItemData.usedCompanyServices,
+      const companyServicesAndStatus = _.cloneDeep(
+        getState().home.listItemData.companyServicesAndStatus,
       );
 
       switch (serviceType) {
         case 'subscription': {
-          usedCompanyServices.subscription = true;
+          companyServicesAndStatus.subscription = 'pending';
+          companyServicesAndStatus.subscriptionLoc = 'deactive';
           delete customerRequest.requestCoordinate;
           delete customerRequest.wasteDescription;
           delete customerRequest.workDescription;
           break;
         }
         case 'subscription with location': {
-          usedCompanyServices.subscriptionLoc = true;
+          companyServicesAndStatus.subscription = 'deactive';
+          companyServicesAndStatus.subscriptionLoc = 'pending';
           break;
         }
         case 'one time': {
-          usedCompanyServices.oneTime = true;
+          companyServicesAndStatus.oneTime = 'pending';
           break;
         }
       }
@@ -446,7 +449,7 @@ const thunkPostCustomerRequest =
       if (customerRequestRes.status == 200) {
         dispatch(
           postCustomerRequestSuccess({
-            usedCompanyServices,
+            companyServicesAndStatus,
             msg: 'Request send success',
           }),
         );

@@ -31,22 +31,33 @@ export const renderServiceTypes = (
 ) => {
   if (!_.isEmpty(data)) {
     const {allServiceListIndex, companyId} = params;
-    const {subscription, subscriptionLoc, oneTime} = data.usedCompanyServices;
     const {serviceType} = data.companyServiceDetail[0];
+    const {subscription, subscriptionLoc, oneTime} =
+      data.companyServicesAndStatus;
     const arr = [];
-
+    console.log('doc.companyServicesAndStatus:', data.companyServicesAndStatus);
     if (_.includes(serviceType, 'subscription')) {
       arr.push(
         <BtnContained
           key="1"
-          disabled={subscriptionLoc || subscription}
-          onPress={() =>
-            onPressSubscribe(companyId, 'subscription', 'CompanyIndex')
-          }
-          btnStyle={{
-            backgroundColor: subscriptionLoc || subscription ? 'grey' : 'green',
+          disabled={subscription == 'deactive' ? true : false}
+          onPress={() => {
+            if (subscription == 'active') {
+              onPressSubscribe(companyId, 'subscription', 'CompanyIndex');
+            } else {
+              console.log('subscription status:', subscription);
+            }
           }}
-          text={subscription ? 'Subscribed' : 'Subscribe'}
+          btnStyle={{
+            backgroundColor: subscription == 'deactive' ? 'grey' : 'green',
+          }}
+          text={
+            subscription == 'pending'
+              ? 'Subscribe(pending)'
+              : subscription == 'unsubscribe'
+              ? 'Unsubscribe'
+              : 'Subscribe'
+          }
         />,
       );
     }
@@ -55,20 +66,27 @@ export const renderServiceTypes = (
       arr.push(
         <BtnContained
           key="2"
-          disabled={subscription || subscriptionLoc}
-          onPress={() =>
-            navigation.navigate('SubscriptionForm', {
-              allServiceListIndex,
-              companyId,
-              serviceType: 'subscription with location',
-              mode: 'default',
-            })
-          }
-          btnStyle={{
-            backgroundColor:
-              subscription || subscriptionLoc ? 'grey' : 'tomato',
+          disabled={subscriptionLoc == 'deactive' ? true : false}
+          onPress={() => {
+            if (subscriptionLoc == 'active') {
+              navigation.navigate('SubscriptionForm', {
+                allServiceListIndex,
+                companyId,
+                serviceType: 'subscription with location',
+                mode: 'default',
+              });
+            } else {
+              console.log('subscriptionLoc status:', subscriptionLoc);
+            }
           }}
-          text={subscriptionLoc ? 'Subscribed with loc' : 'Subscribe with loc'}
+          btnStyle={{
+            backgroundColor: subscriptionLoc == 'deactive' ? 'grey' : 'tomato',
+          }}
+          text={
+            subscriptionLoc == 'pending'
+              ? 'Subscribe + location(pending)'
+              : 'Subscribe + location'
+          }
         />,
       );
     }
@@ -77,17 +95,22 @@ export const renderServiceTypes = (
       arr.push(
         <BtnContained
           key="3"
-          disabled={oneTime}
-          onPress={() =>
-            navigation.navigate('SubscriptionForm', {
-              allServiceListIndex,
-              companyId,
-              serviceType: 'one time',
-              mode: 'default',
-            })
+          onPress={() => {
+            if (oneTime == 'active') {
+              navigation.navigate('SubscriptionForm', {
+                allServiceListIndex,
+                companyId,
+                serviceType: 'one time',
+                mode: 'default',
+              });
+            } else {
+              console.log('oneTime status:', oneTime);
+            }
+          }}
+          btnStyle={{backgroundColor: 'navy'}}
+          text={
+            oneTime == 'active' ? 'One time deal' : `One time deal(${oneTime})`
           }
-          btnStyle={{backgroundColor: oneTime ? 'grey' : 'navy'}}
-          text={oneTime ? 'On deal' : 'One time deal'}
         />,
       );
     }
