@@ -4,8 +4,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import HomeIndex from './Home/HomeIndex';
 import CompanyIndex from './Company/CompanyIndex';
-import SubscriptionForm from './Company/SubscriptionForm';
-import LocationPicker from './Company/LocationPicker';
+import SubscriptionForm from './SubscriptionForm';
+import LocationPicker from './LocationPicker';
 import RequestIndex from './Request/RequestIndex';
 
 const HomeStack = createStackNavigator();

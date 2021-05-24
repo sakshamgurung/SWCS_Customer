@@ -18,7 +18,7 @@ import {FormWasteList} from 'components/list';
 import {WorkDescription} from 'components/input';
 import {Card, CardSection} from 'components/card';
 import {renderHeader} from './SubscriptionFormUtil';
-import {processWasteListData} from '../Request/RequestIndexUtil';
+import {processWasteListData} from './Request/RequestIndexUtil';
 
 class SubscriptionForm extends Component {
   componentDidMount() {
