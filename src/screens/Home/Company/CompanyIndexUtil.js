@@ -30,12 +30,11 @@ export const renderServiceTypes = (
   onPressSubscribe,
 ) => {
   if (!_.isEmpty(data)) {
-    const {allServiceListIndex, companyId} = params;
-    const {serviceType} = data.companyServiceDetail[0];
+    const {companyId} = params;
+    const {serviceType} = data.companyServiceDetail;
     const {subscription, subscriptionLoc, oneTime} =
       data.companyServicesAndStatus;
     const arr = [];
-    console.log('doc.companyServicesAndStatus:', data.companyServicesAndStatus);
     if (_.includes(serviceType, 'subscription')) {
       arr.push(
         <BtnContained
@@ -70,7 +69,6 @@ export const renderServiceTypes = (
           onPress={() => {
             if (subscriptionLoc == 'active') {
               navigation.navigate('SubscriptionForm', {
-                allServiceListIndex,
                 companyId,
                 serviceType: 'subscription with location',
                 mode: 'default',
@@ -98,7 +96,6 @@ export const renderServiceTypes = (
           onPress={() => {
             if (oneTime == 'active') {
               navigation.navigate('SubscriptionForm', {
-                allServiceListIndex,
                 companyId,
                 serviceType: 'one time',
                 mode: 'default',

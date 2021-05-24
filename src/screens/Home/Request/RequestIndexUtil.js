@@ -34,43 +34,55 @@ export const renderHeaderOptions = (
   isHeaderOptionsShown,
   toggleHeaderOptions,
   optionData,
-  requestType,
-  requestStatus,
+  data,
 ) => {
-  if (
-    requestType == 'subscription' ||
-    _.includes(['accepted', 'assigned', 'finished'], requestStatus)
-  ) {
-    optionData[0].enabled = false;
-    optionData[0].icon = (
-      <MaterialCommIcon name="pencil" color={'rgba(0, 0, 0, 0.3)'} size={20} />
-    );
-  }
+  if (!_.isEmpty(data)) {
+    const {requestType, requestStatus} = data;
 
-  if (isHeaderOptionsShown) {
-    return (
-      <ModalHeaderOptions
-        optionData={optionData}
-        onPressModalBG={toggleHeaderOptions}
-        onRequestClose={toggleHeaderOptions}
-      />
-    );
+    if (
+      requestType == 'subscription' ||
+      _.includes(['accepted', 'assigned', 'finished'], requestStatus)
+    ) {
+      optionData[0].enabled = false;
+      optionData[0].icon = (
+        <MaterialCommIcon
+          name="pencil"
+          color={'rgba(0, 0, 0, 0.3)'}
+          size={20}
+        />
+      );
+    }
+
+    if (isHeaderOptionsShown) {
+      return (
+        <ModalHeaderOptions
+          optionData={optionData}
+          onPressModalBG={toggleHeaderOptions}
+          onRequestClose={toggleHeaderOptions}
+        />
+      );
+    }
   }
 };
 
-export const processWasteListData = (wasteList, wasteDescription) => {
-  const modifiedWasteList = _.cloneDeep(wasteList);
-  const filteredWasteList = _.filter(modifiedWasteList, wl => {
-    for (let wd of wasteDescription) {
-      if (wl._id == wd.wasteListId) {
-        wl.amount = wd.amount;
-        wl.isSelected = true;
-        return true;
-      } else {
-        wl.amount = '';
-        wl.isSelected = false;
+export const processWasteListData = (wasteList, customerRequest) => {
+  if (!_.isEmpty(wasteList) && !_.isEmpty(customerRequest)) {
+    const {wasteDescription} = _.cloneDeep(customerRequest);
+    const modifiedWasteList = _.cloneDeep(wasteList);
+    const filteredWasteList = _.filter(modifiedWasteList, wl => {
+      for (let wd of wasteDescription) {
+        if (wl._id == wd.wasteListId) {
+          wl.amount = wd.amount;
+          wl.isSelected = true;
+          return true;
+        } else {
+          wl.amount = '';
+          wl.isSelected = false;
+        }
       }
-    }
-  });
-  return {modifiedWasteList, filteredWasteList};
+    });
+    return {modifiedWasteList, filteredWasteList};
+  } else {
+    return {modifiedWasteList: undefined, filteredWasteList: undefined};
+  }
 };

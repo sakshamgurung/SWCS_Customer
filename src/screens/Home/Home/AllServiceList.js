@@ -25,7 +25,6 @@ export default function AllServiceList({data, refreshData}) {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('CompanyIndex', {
-            allServiceListIndex: index,
             companyId: item.companyId._id,
           })
         }>

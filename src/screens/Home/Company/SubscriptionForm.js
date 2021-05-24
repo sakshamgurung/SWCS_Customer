@@ -103,11 +103,13 @@ class SubscriptionForm extends Component {
   render() {
     const {route} = this.props;
     const {mode} = route.params;
+
+    const {listItemData, customerRequest} = this.props;
+    const {customerRequestChanged} = this.props;
+    const {wasteList} = listItemData;
+    const {workDescription} = customerRequest;
+
     if (mode == 'default') {
-      const {listItemData, customerRequest} = this.props;
-      const {customerRequestChanged} = this.props;
-      const {wasteList} = listItemData;
-      const {workDescription} = customerRequest;
       return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <SafeAreaView
@@ -134,15 +136,11 @@ class SubscriptionForm extends Component {
         </TouchableWithoutFeedback>
       );
     } else if (mode == 'edit') {
-      const {listItemData, customerRequest} = this.props;
-      const {customerRequestChanged} = this.props;
-
-      const {wasteDescription, workDescription} = customerRequest;
-      const {wasteList} = listItemData;
       const {modifiedWasteList} = processWasteListData(
         wasteList,
-        wasteDescription,
+        customerRequest,
       );
+
       return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <SafeAreaView

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {SafeAreaView} from 'react-native';
+import {Text, SafeAreaView} from 'react-native';
 
 import _ from 'lodash';
 import {bindActionCreators} from 'redux';
@@ -11,12 +11,8 @@ import AboutCompany from './AboutCompany';
 
 export class CompanyIndex extends Component {
   componentDidMount() {
-    const {allServiceListIndex, companyId} = this.props.route.params;
-    this.props.thunkFetchListItemData(
-      allServiceListIndex,
-      'aboutCompany',
-      companyId,
-    );
+    const {companyId} = this.props.route.params;
+    this.props.thunkFetchListItemData('aboutCompany', companyId, undefined);
   }
 
   goBack = () => {
@@ -25,22 +21,23 @@ export class CompanyIndex extends Component {
   };
 
   render() {
-    const {route, homeListData, listItemData} = this.props;
+    const {route, listItemData} = this.props;
     const {navigation, thunkPostCustomerRequest} = this.props;
-    const {allServiceListIndex} = route.params;
 
-    const companyDetail = homeListData.allServiceListData[allServiceListIndex];
-
+    let title = '';
+    if (listItemData.companyDetail) {
+      title = listItemData.companyDetail.companyName;
+    }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(62, 115, 222, 1)'}}>
-        {renderHeader(companyDetail.companyName, this.goBack)}
+        {renderHeader(title, this.goBack)}
         {renderServiceTypes(
           listItemData,
           navigation,
           route.params,
           thunkPostCustomerRequest,
         )}
-        <AboutCompany data={{...listItemData, companyDetail}} />
+        <AboutCompany data={listItemData} />
       </SafeAreaView>
     );
   }

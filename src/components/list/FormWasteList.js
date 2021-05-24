@@ -100,50 +100,54 @@ function Item({item, index, toggleDataSelection, amtDataChanged}) {
 }
 
 export default function FormWasteList({data, dataChanged}) {
-  const cloneData = _.cloneDeep(data);
-  for (let d of cloneData) {
-    if (!d.hasOwnProperty('isSelected')) {
-      d.isSelected = false;
-    }
-    if (!d.hasOwnProperty('amount')) {
-      d.amount = '';
-    }
-  }
-
-  const [itemData, setItemData] = useState(cloneData);
-
-  const itemDataChanged = data => {
-    const {property, index, value} = data;
-    const tempItemData = _.cloneDeep(itemData);
-    tempItemData[index][`${property}`] = value;
-    setItemData(tempItemData);
-
-    const formatedItemData = [];
-    tempItemData.forEach(e => {
-      if (e.isSelected) {
-        formatedItemData.push({
-          wasteListId: e._id,
-          amount: e.amount,
-          amountUnit: e.unit,
-        });
+  if (!_.isEmpty(data)) {
+    const cloneData = _.cloneDeep(data);
+    for (let d of cloneData) {
+      if (!d.hasOwnProperty('isSelected')) {
+        d.isSelected = false;
       }
-    });
-    dataChanged({property: 'wasteDescription', data: formatedItemData});
-  };
+      if (!d.hasOwnProperty('amount')) {
+        d.amount = '';
+      }
+    }
 
-  return (
-    <View>
-      {itemData.map((item, index) => (
-        <Item
-          item={item}
-          index={index}
-          key={index}
-          toggleDataSelection={itemDataChanged}
-          amtDataChanged={itemDataChanged}
-        />
-      ))}
-    </View>
-  );
+    const [itemData, setItemData] = useState(cloneData);
+
+    const itemDataChanged = data => {
+      const {property, index, value} = data;
+      const tempItemData = _.cloneDeep(itemData);
+      tempItemData[index][`${property}`] = value;
+      setItemData(tempItemData);
+
+      const formatedItemData = [];
+      tempItemData.forEach(e => {
+        if (e.isSelected) {
+          formatedItemData.push({
+            wasteListId: e._id,
+            amount: e.amount,
+            amountUnit: e.unit,
+          });
+        }
+      });
+      dataChanged({property: 'wasteDescription', data: formatedItemData});
+    };
+
+    return (
+      <View>
+        {itemData.map((item, index) => (
+          <Item
+            item={item}
+            index={index}
+            key={index}
+            toggleDataSelection={itemDataChanged}
+            amtDataChanged={itemDataChanged}
+          />
+        ))}
+      </View>
+    );
+  } else {
+    return null;
+  }
 }
 
 const styles = StyleSheet.create({

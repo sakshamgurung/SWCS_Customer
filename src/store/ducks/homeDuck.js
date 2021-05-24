@@ -165,13 +165,13 @@ export default function reducer(state = initialState, action) {
     }
 
     case types.UPDATE_CUSTOMER_REQUEST_SUCCESS: {
-      const {msg, requestListIndex, customerRequest} = action.payload;
-      const homeListData = _.cloneDeep(state.homeListData);
-      homeListData.requestListData[requestListIndex] = customerRequest;
+      const {msg, customerRequest} = action.payload;
+      const listItemData = _.cloneDeep(state.listItemData);
+      listItemData.customerRequest = customerRequest;
       return {
         ...state,
         loading: false,
-        homeListData,
+        listItemData,
         logMessage: {type: 'success', msg},
       };
     }
@@ -341,33 +341,89 @@ const thunkFetchHomeListData = () => async dispatch => {
 };
 
 const thunkFetchListItemData =
-  (arrayIndex, listItemType, refId) => async (dispatch, getState) => {
+  (listItemType, companyId, itemId) => async (dispatch, getState) => {
     try {
       dispatch(fetchListItemData());
       const customerId = await AsyncStorage.getItem('customerId');
 
       if (listItemType == 'aboutCompany') {
-        const companyId = refId;
-        const [companyServiceDetailRes, utilActionRes, wasteListRes] =
-          await Promise.all([
-            Client.get(
-              CompanyUrl.getByRef('company-service-detail', 'companyId', refId),
-            ),
-            Client.post(UtilActionUrl.verify(), {
-              type: 'companyServicesAndStatus',
-              customerId,
+        const [
+          companyDetailRes,
+          companyServiceDetailRes,
+          utilActionRes,
+          wasteListRes,
+        ] = await Promise.all([
+          Client.get(
+            CompanyUrl.getByRef('company-detail', 'companyId', companyId),
+          ),
+          Client.get(
+            CompanyUrl.getByRef(
+              'company-service-detail',
+              'companyId',
               companyId,
-            }),
-            Client.get(WasteListUrl.getByRef('companyId', refId)),
-          ]);
+            ),
+          ),
+          Client.post(UtilActionUrl.verify(), {
+            type: 'companyServicesAndStatus',
+            customerId,
+            companyId: companyId,
+          }),
+          Client.get(WasteListUrl.getByRef('companyId', companyId)),
+        ]);
 
         dispatch(
           fetchListItemDataSuccess({
             data: {
-              companyServiceDetail: companyServiceDetailRes.data,
+              companyDetail: companyDetailRes.data[0],
+              companyServiceDetail: companyServiceDetailRes.data[0],
               companyServicesAndStatus:
                 utilActionRes.data.companyServicesAndStatus,
               wasteList: wasteListRes.data,
+            },
+          }),
+        );
+      } else if (listItemType == 'aboutRequest') {
+        const [
+          companyDetailRes,
+          companyServiceDetailRes,
+          utilActionRes,
+          wasteListRes,
+          requestRes,
+        ] = await Promise.all([
+          Client.get(
+            CompanyUrl.getByRef('company-detail', 'companyId', companyId),
+          ),
+          Client.get(
+            CompanyUrl.getByRef(
+              'company-service-detail',
+              'companyId',
+              companyId,
+            ),
+          ),
+          Client.post(UtilActionUrl.verify(), {
+            type: 'companyServicesAndStatus',
+            customerId,
+            companyId,
+          }),
+          Client.get(WasteListUrl.getByRef('companyId', companyId)),
+          Client.get(CustomerRequestUrl.getById(itemId)),
+        ]);
+
+        if (requestRes) {
+          requestRes.data.wasteDescription.forEach(wd => {
+            wd.amount = wd.amount.toString();
+          });
+        }
+
+        dispatch(
+          fetchListItemDataSuccess({
+            data: {
+              companyDetail: companyDetailRes.data[0],
+              companyServiceDetail: companyServiceDetailRes.data[0],
+              companyServicesAndStatus:
+                utilActionRes.data.companyServicesAndStatus,
+              wasteList: wasteListRes.data,
+              customerRequest: requestRes.data,
             },
           }),
         );
@@ -457,68 +513,55 @@ const thunkPostCustomerRequest =
     }
   };
 
-const thunkUpdateCustomerRequest =
-  (requestListIndex, screenName) => async (dispatch, getState) => {
-    try {
-      dispatch(updateCustomerRequest());
+const thunkUpdateCustomerRequest = screenName => async (dispatch, getState) => {
+  try {
+    dispatch(updateCustomerRequest());
 
-      const customerRequest = _.cloneDeep(
-        getState().home.homeListData.requestListData[requestListIndex],
-      );
-      const editedCustomerRequest = _.cloneDeep(
-        getState().home.customerRequest,
-      );
-      customerRequest.wasteDescription = editedCustomerRequest.wasteDescription;
-      customerRequest.workDescription = editedCustomerRequest.workDescription;
-      customerRequest.requestCoordinate =
-        editedCustomerRequest.requestCoordinate;
-      const customerRequestId = _.clone(customerRequest._id);
-      const modifiedCustomerRequest = _.cloneDeep(customerRequest);
-      delete customerRequest._id;
-      delete customerRequest.companyId;
-      delete customerRequest.customerId;
-      delete customerRequest.companyDetail;
+    const customerRequest = _.cloneDeep(
+      getState().home.listItemData.customerRequest,
+    );
+    const editedCustomerRequest = _.cloneDeep(getState().home.customerRequest);
+    customerRequest.wasteDescription = editedCustomerRequest.wasteDescription;
+    customerRequest.workDescription = editedCustomerRequest.workDescription;
+    customerRequest.requestCoordinate = editedCustomerRequest.requestCoordinate;
 
-      const customerRequestRes = await Client.put(
-        CustomerRequestUrl.put(customerRequestId),
-        customerRequest,
-      );
+    const customerRequestId = _.clone(customerRequest._id);
+    const modifiedCustomerRequest = _.cloneDeep(customerRequest);
+    delete customerRequest._id;
+    delete customerRequest.companyId;
+    delete customerRequest.customerId;
+    delete customerRequest.companyDetail;
 
-      if (customerRequestRes.status == 200) {
-        dispatch(
-          updateCustomerRequestSuccess({
-            msg: 'Request update success',
-            requestListIndex,
-            customerRequest: modifiedCustomerRequest,
-          }),
-        );
-        dispatch(resetCustomerRequest());
-        navigate(screenName);
-      }
-    } catch (err) {
-      requestErrorLog(err);
-      dispatch(updateCustomerRequestFailed('Failed to update request'));
+    const customerRequestRes = await Client.put(
+      CustomerRequestUrl.put(customerRequestId),
+      customerRequest,
+    );
+
+    if (customerRequestRes.status == 200) {
+      dispatch(
+        updateCustomerRequestSuccess({
+          msg: 'Request update success',
+          customerRequest: modifiedCustomerRequest,
+        }),
+      );
       dispatch(resetCustomerRequest());
       navigate(screenName);
     }
-  };
+  } catch (err) {
+    requestErrorLog(err);
+    dispatch(updateCustomerRequestFailed('Failed to update request'));
+    dispatch(resetCustomerRequest());
+    navigate(screenName);
+  }
+};
 
 const thunkDeleteCustomerRequest =
-  (requestListIndex, screenName) => async (dispatch, getState) => {
+  (customerRequestId, screenName) => async (dispatch, getState) => {
     try {
       dispatch(deleteCustomerRequest());
       dispatch(toggleHeaderOptions());
 
-      const customerRequest = _.cloneDeep(
-        getState().home.homeListData.requestListData[requestListIndex],
-      );
-
-      const customerRequestId = _.clone(customerRequest._id);
-
-      await Client.delete(
-        CustomerRequestUrl.delete(customerRequestId),
-        customerRequest,
-      );
+      await Client.delete(CustomerRequestUrl.delete(customerRequestId));
 
       dispatch(
         deleteCustomerRequestSuccess({

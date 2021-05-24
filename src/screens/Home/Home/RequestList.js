@@ -25,9 +25,8 @@ export default function RequestList({data}) {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('RequestIndex', {
-            requestListIndex: index,
+            customerRequestId: item._id,
             companyId: item.companyId._id,
-            serviceType: item.requestType,
           })
         }>
         <MaterialCommunityIcons
@@ -37,9 +36,8 @@ export default function RequestList({data}) {
         />
         <Text>{item.companyId._id}</Text>
         <Text>{item.companyDetail.companyName}</Text>
-        <Text>{item.companyDetail.companyType}</Text>
-        <Text>{item.requestType}</Text>
-        <Text>{item.requestStatus}</Text>
+        <Text>Requested service: {item.requestType}</Text>
+        <Text>Service status: {item.requestStatus}</Text>
       </TouchableOpacity>
     </CardSection>
   );

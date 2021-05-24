@@ -1,32 +1,28 @@
 import React from 'react';
 import {View, Text, ScrollView} from 'react-native';
 
+import _ from 'lodash';
+
 import {Card, CardSection} from 'components/card';
 import {WasteDescription} from 'components/list';
 
-export default function RequestDetail({data}) {
-  const {
-    companyDetail,
-    companyId,
-    workDescription,
-    date,
-    time,
-    requestCoordinate,
-    requestType,
-    requestStatus,
-    filteredWasteList,
-  } = data;
-  return (
-    <ScrollView>
-      <CardSection>
-        <Text>{companyDetail.companyName}</Text>
-        <Text>{companyId.email}</Text>
-        <Text>{companyId.mobileNo}</Text>
-        <Text>{requestType}</Text>
-        <Text>{requestStatus}</Text>
-        <Text>{workDescription}</Text>
-      </CardSection>
-      <WasteDescription data={filteredWasteList} />
-    </ScrollView>
-  );
+export default function RequestDetail({customerRequest, wasteDescriptionData}) {
+  if (!_.isEmpty(customerRequest)) {
+    const {companyId, workDescription, date, time, requestType, requestStatus} =
+      customerRequest;
+    return (
+      <ScrollView>
+        <CardSection>
+          <Text>{companyId.email}</Text>
+          <Text>{companyId.mobileNo}</Text>
+          <Text>Service type:{requestType}</Text>
+          <Text>Request status:{requestStatus}</Text>
+          <Text>Work description: {workDescription}</Text>
+        </CardSection>
+        <WasteDescription data={wasteDescriptionData} />
+      </ScrollView>
+    );
+  } else {
+    return null;
+  }
 }

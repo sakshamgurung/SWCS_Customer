@@ -7,7 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import {Card, CardSection} from 'components/card';
 
-export default function SubscriptionList({data, data2}) {
+export default function SubscriptionList({data}) {
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -22,17 +22,8 @@ export default function SubscriptionList({data, data2}) {
   }, []);
 
   goToDetail = (item, index) => {
-    const allServiceListData = data2;
-    const allServiceListIndex = _.findIndex(allServiceListData, o => {
-      return o.companyId._id == item.companyId._id;
-    });
-    if (allServiceListIndex == -1) {
-      console.log('SubscriptionList:index of all service list not found');
-      return;
-    }
     navigation.navigate('CompanyIndex', {
       subscriptionIndex: index,
-      allServiceListIndex,
       companyId: item.companyId._id,
     });
   };

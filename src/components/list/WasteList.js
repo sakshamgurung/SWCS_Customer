@@ -18,12 +18,16 @@ const Item = ({item, index}) => (
 );
 
 export default function WasteList({data}) {
-  return (
-    <View>
-      <Text>Waste we handle</Text>
-      {data.map((item, index) => (
-        <Item item={item} index={index} key={index} />
-      ))}
-    </View>
-  );
+  if (!_.isEmpty(data)) {
+    return (
+      <View>
+        <Text>Waste we handle</Text>
+        {data.map((item, index) => (
+          <Item item={item} index={index} key={index} />
+        ))}
+      </View>
+    );
+  } else {
+    return null;
+  }
 }

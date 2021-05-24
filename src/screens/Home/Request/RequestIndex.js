@@ -16,21 +16,16 @@ import RequestDetail from './RequestDetail';
 
 class RequestIndex extends Component {
   goToEdit = () => {
-    const {navigation, route, homeListData} = this.props;
+    const {navigation, route, listItemData} = this.props;
     const {customerRequestChanged} = this.props;
     const {params} = route;
-    const {requestListIndex} = params;
-    const customerRequest = homeListData.requestListData[requestListIndex];
+    const {customerRequest} = listItemData;
     const {requestCoordinate, wasteDescription, workDescription} =
       customerRequest;
-    const {identifier, coordinates} = requestCoordinate;
+
     customerRequestChanged({
       property: 'requestCoordinate',
-      data: {
-        identifier,
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
-      },
+      data: requestCoordinate,
     });
     customerRequestChanged({
       property: 'wasteDescription',
@@ -47,7 +42,7 @@ class RequestIndex extends Component {
   goToDelete = () => {
     const {route} = this.props;
     const {thunkDeleteCustomerRequest} = this.props;
-    const {requestListIndex} = route.params;
+    const {customerRequestId} = route.params;
     Alert.alert(
       'Delete your request?',
       'Selecting yes will delete this request.',
@@ -56,7 +51,7 @@ class RequestIndex extends Component {
         {
           text: 'Yes',
           onPress: () => {
-            thunkDeleteCustomerRequest(requestListIndex, 'HomeIndex');
+            thunkDeleteCustomerRequest(customerRequestId, 'HomeIndex');
           },
         },
       ],
@@ -89,12 +84,13 @@ class RequestIndex extends Component {
       },
     ];
   }
+
   componentDidMount() {
-    const {requestListIndex, companyId} = this.props.route.params;
+    const {customerRequestId, companyId} = this.props.route.params;
     this.props.thunkFetchListItemData(
-      requestListIndex,
-      'aboutCompany',
+      'aboutRequest',
       companyId,
+      customerRequestId,
     );
   }
 
@@ -109,31 +105,33 @@ class RequestIndex extends Component {
   };
 
   render() {
-    const {isHeaderOptionsShown, route, homeListData, listItemData} =
-      this.props;
+    const {isHeaderOptionsShown, listItemData} = this.props;
 
-    const {requestListIndex} = route.params;
-    const customerRequest = homeListData.requestListData[requestListIndex];
-    const {companyName} = customerRequest.companyDetail;
-    const {wasteDescription} = customerRequest;
-    const {wasteList} = listItemData;
+    const {companyDetail, wasteList, customerRequest} = listItemData;
+
+    let title = '';
+    if (!_.isEmpty(companyDetail)) {
+      title = companyDetail.companyName;
+    }
+
     const {filteredWasteList} = processWasteListData(
       wasteList,
-      wasteDescription,
+      customerRequest,
     );
-    const {requestType, requestStatus} = customerRequest;
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(62, 115, 222, 1)'}}>
-        {renderHeader(companyName, this.goBack, this.toggleHeaderOptions)}
+        {renderHeader(title, this.goBack, this.toggleHeaderOptions)}
         {renderHeaderOptions(
           isHeaderOptionsShown,
           this.toggleHeaderOptions,
           this.optionData,
-          requestType,
-          requestStatus,
+          customerRequest,
         )}
-        <RequestDetail data={{...customerRequest, filteredWasteList}} />
+        <RequestDetail
+          customerRequest={customerRequest}
+          wasteDescriptionData={filteredWasteList}
+        />
       </SafeAreaView>
     );
   }

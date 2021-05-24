@@ -78,16 +78,24 @@ class LocationPicker extends Component {
   };
 
   customerRequestDone = () => {
-    const {route} = this.props;
+    const {route, customerRequest} = this.props;
     const {thunkPostCustomerRequest, thunkUpdateCustomerRequest} = this.props;
-    const {companyId, serviceType, mode, requestListIndex} = route.params;
-    let screenName;
+    const {companyId, serviceType, mode} = route.params;
+    if (_.isEmpty(customerRequest.requestCoordinate)) {
+      Alert.alert(
+        'No location selected.',
+        'Please drag and press any where on map to select a location.',
+        [],
+        {cancelable: true},
+      );
+      return;
+    }
     if (mode == 'default') {
-      screenName = 'CompanyIndex';
+      const screenName = 'CompanyIndex';
       thunkPostCustomerRequest(companyId, serviceType, screenName);
     } else if (mode == 'edit') {
-      screenName = 'RequestIndex';
-      thunkUpdateCustomerRequest(requestListIndex, screenName);
+      const screenName = 'RequestIndex';
+      thunkUpdateCustomerRequest(screenName);
     }
   };
 

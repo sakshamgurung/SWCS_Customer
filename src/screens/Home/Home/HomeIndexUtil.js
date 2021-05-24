@@ -10,11 +10,6 @@ export const renderList = (selectedTab, homeListData) => {
   } else if (selectedTab == 'request') {
     return <RequestList data={homeListData.requestListData} />;
   } else if (selectedTab == 'subscription') {
-    return (
-      <SubscriptionList
-        data={homeListData.subscriptionListData}
-        data2={homeListData.allServiceListData}
-      />
-    );
+    return <SubscriptionList data={homeListData.subscriptionListData} />;
   }
 };

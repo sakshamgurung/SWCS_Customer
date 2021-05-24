@@ -51,14 +51,18 @@ function Item({item}) {
 }
 
 export default function WasteDescription({data}) {
-  return (
-    <View>
-      <Text>Waste Description</Text>
-      {data.map((item, index) => (
-        <Item item={item} index={index} key={index} />
-      ))}
-    </View>
-  );
+  if (!_.isEmpty(data)) {
+    return (
+      <View>
+        <Text>Waste Description</Text>
+        {data.map((item, index) => (
+          <Item item={item} index={index} key={index} />
+        ))}
+      </View>
+    );
+  } else {
+    return null;
+  }
 }
 
 const styles = StyleSheet.create({
