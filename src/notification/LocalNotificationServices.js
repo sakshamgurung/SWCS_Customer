@@ -4,12 +4,10 @@ class LocalNotificationServices {
   configure(onRegister, onNotification) {
     PushNotification.configure({
       onRegister: function (token) {
-        console.log('TOKEN:', token);
         onRegister(token);
       },
 
       onNotification: function (notification) {
-        console.log('NOTIFICATION:', notification);
         onNotification(notification);
       },
 
@@ -19,7 +17,6 @@ class LocalNotificationServices {
   }
 
   createDefaultChannel() {
-    console.log('creating default channel...');
     PushNotification.createChannel(
       {
         channelId: 'SWCS-customer-default-channel-id',

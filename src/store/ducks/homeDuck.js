@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {navigate} from '../navigationService';
@@ -11,6 +12,8 @@ import {
   SubscriptionUrl,
   Client,
   GeoObjectUrl,
+  CustomerUsedGeoObjectUrl,
+  WasteDumpUrl,
 } from 'api';
 
 export const types = {
@@ -43,6 +46,26 @@ export const types = {
   DELETE_CUSTOMER_REQUEST: 'home/deleteCustomerRequest',
   DELETE_CUSTOMER_REQUEST_SUCCESS: 'home/deleteCustomerRequestSuccess',
   DELETE_CUSTOMER_REQUEST_FAILED: 'home/deleteCustomerRequestFailed',
+
+  FETCH_MAP_PROFILE: 'home/fetchMapProfile',
+  FETCH_MAP_PROFILE_SUCCESS: 'home/fetchMapProfileSuccess',
+  FETCH_MAP_PROFILE_FAILED: 'home/fetchMapProfileFailed',
+
+  MAP_PROFILE_DATA_CHANGED: 'home/mapProfileDataChanged',
+  WASTE_DUMP_DATA_CHANGED: 'home/wasteDumpDataChanged',
+  RESET_MAP_PROFILE: 'home/resetMapProfile',
+
+  POST_WASTE_DUMP: 'home/postWasteDump',
+  POST_WASTE_DUMP_SUCCESS: 'home/postWasteDumpSuccess',
+  POST_WASTE_DUMP_FAILED: 'home/postWasteDumpFailed',
+
+  UPDATE_WASTE_DUMP: 'home/updateWasteDump',
+  UPDATE_WASTE_DUMP_SUCCESS: 'home/updateWasteDumpSuccess',
+  UPDATE_WASTE_DUMP_FAILED: 'home/updateWasteDumpFailed',
+
+  DELETE_WASTE_DUMP: 'home/deleteWasteDump',
+  DELETE_WASTE_DUMP_SUCCESS: 'home/deleteWasteDumpSuccess',
+  DELETE_WASTE_DUMP_FAILED: 'home/deleteWasteDumpFailed',
 };
 
 export const initialState = {
@@ -60,6 +83,16 @@ export const initialState = {
     workDescription: '',
     wasteDescription: [],
   },
+  mapProfileData: {
+    track: [],
+    zone: [],
+    customerUsedGeoObject: {},
+    isBottomSheetShown: false,
+    bottomSheetData: {},
+    selectedGeoObjectIndex: -1,
+    selectedGeoObjectId: '',
+  },
+  wasteDumpData: [],
   logMessage: {type: '', msg: ''}, //type = failed, success
 };
 
@@ -199,6 +232,104 @@ export default function reducer(state = initialState, action) {
       return {...state, loading: false, logMessage: {type: 'failed', msg}};
     }
 
+    case types.FETCH_MAP_PROFILE: {
+      return {...state, loading: true};
+    }
+
+    case types.FETCH_MAP_PROFILE_SUCCESS: {
+      const {property, data} = action.payload;
+      const mapProfileData = _.cloneDeep(state.mapProfileData);
+      mapProfileData[`${property}`] = data;
+      return {...state, loading: false, mapProfileData};
+    }
+
+    case types.FETCH_MAP_PROFILE_FAILED: {
+      const msg = action.payload;
+      return {...state, loading: false, logMessage: {type: 'failed', msg}};
+    }
+
+    case types.MAP_PROFILE_DATA_CHANGED: {
+      const {property, data} = action.payload;
+      const mapProfileData = _.cloneDeep(state.mapProfileData);
+      mapProfileData[`${property}`] = data;
+      return {...state, mapProfileData};
+    }
+
+    case types.WASTE_DUMP_DATA_CHANGED: {
+      const wasteDumpData = action.payload;
+      return {...state, wasteDumpData};
+    }
+
+    case types.RESET_MAP_PROFILE: {
+      return {
+        ...state,
+        mapProfileData: {
+          track: [],
+          zone: [],
+          customerUsedGeoObject: {},
+          isBottomSheetShown: false,
+          bottomSheetData: {},
+          selectedGeoObjectIndex: -1,
+          selectedGeoObjectId: '',
+        },
+        wasteDumpData: [],
+      };
+    }
+
+    case types.POST_WASTE_DUMP: {
+      return {...state, loading: true};
+    }
+
+    case types.POST_WASTE_DUMP_SUCCESS: {
+      const {msg} = action.payload;
+      return {
+        ...state,
+        loading: false,
+        logMessage: {type: 'success', msg},
+      };
+    }
+
+    case types.POST_WASTE_DUMP_FAILED: {
+      const msg = action.payload;
+      return {...state, loading: false, logMessage: {type: 'failed', msg}};
+    }
+
+    case types.UPDATE_WASTE_DUMP: {
+      return {...state, loading: true};
+    }
+
+    case types.UPDATE_WASTE_DUMP_SUCCESS: {
+      const {msg} = action.payload;
+      return {
+        ...state,
+        loading: false,
+        logMessage: {type: 'success', msg},
+      };
+    }
+
+    case types.UPDATE_WASTE_DUMP_FAILED: {
+      const msg = action.payload;
+      return {...state, loading: false, logMessage: {type: 'failed', msg}};
+    }
+
+    case types.DELETE_WASTE_DUMP: {
+      return {...state, loading: true};
+    }
+
+    case types.DELETE_WASTE_DUMP_SUCCESS: {
+      const {msg} = action.payload;
+      return {
+        ...state,
+        loading: false,
+        logMessage: {type: 'success', msg},
+      };
+    }
+
+    case types.DELETE_WASTE_DUMP_FAILED: {
+      const msg = action.payload;
+      return {...state, loading: false, logMessage: {type: 'failed', msg}};
+    }
+
     default: {
       return {...state};
     }
@@ -291,6 +422,66 @@ const deleteCustomerRequestSuccess = successData => {
 
 const deleteCustomerRequestFailed = failedData => {
   return {type: types.DELETE_CUSTOMER_REQUEST_FAILED, payload: failedData};
+};
+
+const fetchMapProfile = () => {
+  return {type: types.FETCH_MAP_PROFILE};
+};
+
+const fetchMapProfileSuccess = successData => {
+  return {type: types.FETCH_MAP_PROFILE_SUCCESS, payload: successData};
+};
+
+const fetchMapProfileFailed = failedData => {
+  return {type: types.FETCH_MAP_PROFILE_FAILED, payload: failedData};
+};
+
+const mapProfileDataChanged = mapProfileData => {
+  return {type: types.MAP_PROFILE_DATA_CHANGED, payload: mapProfileData};
+};
+
+const wasteDumpDataChanged = wasteDumpData => {
+  return {type: types.WASTE_DUMP_DATA_CHANGED, payload: wasteDumpData};
+};
+
+const resetMapProfile = () => {
+  return {type: types.RESET_MAP_PROFILE};
+};
+
+const postWasteDump = () => {
+  return {type: types.POST_WASTE_DUMP};
+};
+
+const postWasteDumpSuccess = successData => {
+  return {type: types.POST_WASTE_DUMP_SUCCESS, payload: successData};
+};
+
+const postWasteDumpFailed = failedData => {
+  return {type: types.POST_WASTE_DUMP_FAILED, payload: failedData};
+};
+
+const updateWasteDump = () => {
+  return {type: types.UPDATE_WASTE_DUMP};
+};
+
+const updateWasteDumpSuccess = successData => {
+  return {type: types.UPDATE_WASTE_DUMP_SUCCESS, payload: successData};
+};
+
+const updateWasteDumpFailed = failedData => {
+  return {type: types.UPDATE_WASTE_DUMP_FAILED, payload: failedData};
+};
+
+const deleteWasteDump = () => {
+  return {type: types.DELETE_WASTE_DUMP};
+};
+
+const deleteWasteDumpSuccess = successData => {
+  return {type: types.DELETE_WASTE_DUMP_SUCCESS, payload: successData};
+};
+
+const deleteWasteDumpFailed = failedData => {
+  return {type: types.DELETE_WASTE_DUMP_FAILED, payload: failedData};
 };
 
 const thunkResetCustomerRequest = screenName => async dispatch => {
@@ -462,10 +653,12 @@ const thunkPostCustomerRequest =
       const customerId = await AsyncStorage.getItem('customerId');
 
       const customerRequest = _.cloneDeep(getState().home.customerRequest);
+      for (let wd of customerRequest.wasteDescription) {
+        wd.amount = parseInt(wd.amount);
+      }
       customerRequest.companyId = companyId;
       customerRequest.customerId = customerId;
       customerRequest.requestType = serviceType;
-
       const companyServicesAndStatus = _.cloneDeep(
         getState().home.listItemData.companyServicesAndStatus,
       );
@@ -524,7 +717,9 @@ const thunkUpdateCustomerRequest = screenName => async (dispatch, getState) => {
     customerRequest.wasteDescription = editedCustomerRequest.wasteDescription;
     customerRequest.workDescription = editedCustomerRequest.workDescription;
     customerRequest.requestCoordinate = editedCustomerRequest.requestCoordinate;
-
+    for (let wd of customerRequest.wasteDescription) {
+      wd.amount = parseInt(wd.amount);
+    }
     const customerRequestId = _.clone(customerRequest._id);
     const modifiedCustomerRequest = _.cloneDeep(customerRequest);
     delete customerRequest._id;
@@ -576,10 +771,224 @@ const thunkDeleteCustomerRequest =
     }
   };
 
+const thunkFetchMapProfile = companyId => async (dispatch, getState) => {
+  try {
+    dispatch(fetchMapProfile());
+    const customerId = await AsyncStorage.getItem('customerId');
+    const [
+      companyDetailRes,
+      trackRes,
+      zoneRes,
+      customerUsedGeoObjectRes,
+      wasteDumpRes,
+    ] = await Promise.all([
+      Client.get(CompanyUrl.getByRef('company-detail', 'companyId', companyId)),
+      Client.get(GeoObjectUrl.getByRef('track', 'companyId', companyId)),
+      Client.get(GeoObjectUrl.getByRef('zone', 'companyId', companyId)),
+      Client.get(CustomerUsedGeoObjectUrl.getByRef('customerId', customerId)),
+      Client.get(WasteDumpUrl.getByRef('customerId', customerId), {
+        params: {companyId},
+      }),
+    ]);
+
+    const track = trackRes.data;
+    let usedTrack = undefined;
+    if (customerUsedGeoObjectRes.data[0]) {
+      usedTrack = customerUsedGeoObjectRes.data[0].usedTrack;
+    }
+
+    for (let e of track) {
+      e.isPressable = true;
+      e.isDumpBtnPressable = true;
+      e.isEditBtnPressable = false;
+      e.isClearBtnPressable = false;
+      if (!_.isEmpty(usedTrack)) {
+        for (let ut of usedTrack) {
+          if (e.companyId._id == ut.companyId) {
+            if (e._id != ut.trackId) {
+              e.isPressable = false;
+            } else {
+              e.isDumpBtnPressable = false;
+              e.isEditBtnPressable = true;
+              e.isClearBtnPressable = true;
+            }
+          }
+        }
+      }
+    }
+    dispatch(
+      fetchMapProfileSuccess({
+        property: 'bottomSheetData',
+        data: {companyDetail: companyDetailRes.data[0]},
+      }),
+    );
+    dispatch(
+      fetchMapProfileSuccess({
+        property: 'track',
+        data: trackRes.data,
+      }),
+    );
+    dispatch(
+      fetchMapProfileSuccess({
+        property: 'zone',
+        data: zoneRes.data,
+      }),
+    );
+    dispatch(
+      fetchMapProfileSuccess({
+        property: 'customerUsedGeoObject',
+        data: customerUsedGeoObjectRes.data[0],
+      }),
+    );
+    if (!_.isEmpty(wasteDumpRes)) {
+      dispatch(
+        fetchMapProfileSuccess({
+          property: 'bottomSheetData',
+          data: {
+            companyDetail: companyDetailRes.data[0],
+            wasteDump: wasteDumpRes.data[0],
+          },
+        }),
+      );
+
+      for (let dw of wasteDumpRes.data[0].dumpedWaste) {
+        dw.wasteListId = dw.wasteListId._id;
+        dw.amount = dw.amount.toString();
+      }
+      dispatch(wasteDumpDataChanged(wasteDumpRes.data[0].dumpedWaste));
+    }
+  } catch (err) {
+    requestErrorLog(err);
+    dispatch(fetchMapProfileFailed('Data failed to load'));
+  }
+};
+
+const thunkPostWasteDump =
+  (companyId, selectedGeoObjectId, screenName) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch(postWasteDump());
+      const customerId = await AsyncStorage.getItem('customerId');
+      const dumpedWaste = _.cloneDeep(getState().home.wasteDumpData);
+      for (let dw of dumpedWaste) {
+        dw.amount = parseInt(dw.amount);
+      }
+      const wasteDumpData = {};
+      wasteDumpData.companyId = companyId;
+      wasteDumpData.customerId = customerId;
+      wasteDumpData.geoObjectType = 'track';
+      wasteDumpData.geoObjectId = selectedGeoObjectId;
+      wasteDumpData.addedDate = moment().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      wasteDumpData.dumpedWaste = dumpedWaste;
+      wasteDumpData.isCollected = false;
+
+      await Client.post(WasteDumpUrl.post(), wasteDumpData);
+
+      dispatch(postWasteDumpSuccess({msg: 'Waste dumped'}));
+      navigate(screenName);
+    } catch (err) {
+      requestErrorLog(err);
+      dispatch(postWasteDumpFailed('Data post failed'));
+      navigate(screenName);
+    }
+  };
+
+const thunkUpdateWasteDump =
+  (companyId, selectedGeoObjectId, screenName) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch(updateWasteDump());
+      const customerId = await AsyncStorage.getItem('customerId');
+      const wasteDumpId = _.clone(
+        getState().home.mapProfileData.bottomSheetData.wasteDump._id,
+      );
+      const dumpedWaste = _.cloneDeep(getState().home.wasteDumpData);
+      for (let dw of dumpedWaste) {
+        dw.amount = parseInt(dw.amount);
+      }
+      const wasteDumpData = {};
+      wasteDumpData.companyId = companyId;
+      wasteDumpData.customerId = customerId;
+      wasteDumpData.geoObjectType = 'track';
+      wasteDumpData.geoObjectId = selectedGeoObjectId;
+      wasteDumpData.addedDate = moment().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      wasteDumpData.dumpedWaste = dumpedWaste;
+      wasteDumpData.isCollected = false;
+
+      await Client.put(WasteDumpUrl.put(wasteDumpId), wasteDumpData);
+
+      dispatch(updateWasteDumpSuccess({msg: 'Waste dumped'}));
+      navigate(screenName);
+    } catch (err) {
+      requestErrorLog(err);
+      dispatch(updateWasteDumpFailed('Data post failed'));
+      navigate(screenName);
+    }
+  };
+
+const thunkDeleteWasteDump = () => async (dispatch, getState) => {
+  try {
+    dispatch(deleteWasteDump());
+
+    const mapProfileData = _.cloneDeep(getState().home.mapProfileData);
+    let {bottomSheetData, track} = mapProfileData;
+
+    for (let e of track) {
+      e.isPressable = true;
+      e.isDumpBtnPressable = true;
+      e.isEditBtnPressable = false;
+      e.isClearBtnPressable = false;
+    }
+
+    const wasteDumpId = _.clone(
+      getState().home.mapProfileData.bottomSheetData.wasteDump._id,
+    );
+    await Client.delete(WasteDumpUrl.delete(wasteDumpId));
+
+    dispatch(
+      fetchMapProfileSuccess({
+        property: 'track',
+        data: track,
+      }),
+    );
+    dispatch(
+      fetchMapProfileSuccess({
+        property: 'customerUsedGeoObject',
+        data: {},
+      }),
+    );
+
+    bottomSheetData.wasteDump = {};
+    dispatch(
+      fetchMapProfileSuccess({
+        property: 'bottomSheetData',
+        data: bottomSheetData,
+      }),
+    );
+    dispatch(wasteDumpDataChanged([]));
+    dispatch(
+      mapProfileDataChanged({property: 'isBottomSheetShown', data: false}),
+    );
+    dispatch(
+      mapProfileDataChanged({property: 'selectedGeoObjectId', data: ''}),
+    );
+    dispatch(
+      mapProfileDataChanged({property: 'selectedGeoObjectIndex', data: -1}),
+    );
+    dispatch(deleteWasteDumpSuccess({msg: 'Data delete success'}));
+  } catch (err) {
+    requestErrorLog(err);
+    dispatch(deleteWasteDumpFailed('Data delete failed'));
+  }
+};
+
 export const actions = {
   tabSelected,
   toggleHeaderOptions,
   customerRequestChanged,
+  mapProfileDataChanged,
+  wasteDumpDataChanged,
+  resetMapProfile,
   thunkResetCustomerRequest,
   thunkFetchHomeListData,
   thunkFetchListItemData,
@@ -587,4 +996,8 @@ export const actions = {
   thunkPostCustomerRequest,
   thunkUpdateCustomerRequest,
   thunkDeleteCustomerRequest,
+  thunkFetchMapProfile,
+  thunkPostWasteDump,
+  thunkUpdateWasteDump,
+  thunkDeleteWasteDump,
 };

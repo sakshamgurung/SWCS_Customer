@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import {actions as homeActions} from 'store/ducks/homeDuck';
 import {renderHeader, renderServiceTypes} from './CompanyIndexUtil';
 import AboutCompany from './AboutCompany';
+import {BtnContained} from 'components/button';
 
 export class CompanyIndex extends Component {
   componentDidMount() {
@@ -18,6 +19,12 @@ export class CompanyIndex extends Component {
   goBack = () => {
     const {navigation} = this.props;
     navigation.navigate('HomeIndex');
+  };
+
+  showMap = () => {
+    const {navigation, route} = this.props;
+    const {companyId} = route.params;
+    navigation.navigate('MapProfile', {companyId});
   };
 
   render() {
@@ -37,6 +44,7 @@ export class CompanyIndex extends Component {
           route.params,
           thunkPostCustomerRequest,
         )}
+        <BtnContained text="Show in Map" onPress={this.showMap} />
         <AboutCompany data={listItemData} />
       </SafeAreaView>
     );

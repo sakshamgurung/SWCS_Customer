@@ -8,19 +8,14 @@ class FcmNotificationServices {
 
   async checkNotificationPermission(storeDeviceToken) {
     try {
-      console.log('checking notification permission...');
       const authStatus = await messaging().hasPermission();
-      console.log('authStatus/notification permission:', authStatus);
       authStatus
         ? this.getToken(storeDeviceToken)
         : this.requestPermission(storeDeviceToken);
-    } catch (err) {
-      console.log('checkNotificationPermission error:', err);
-    }
+    } catch (err) {}
   }
 
   getToken(storeDeviceToken) {
-    console.log('getting token...');
     messaging()
       .getToken()
       .then(token => {
@@ -32,7 +27,6 @@ class FcmNotificationServices {
   }
 
   requestPermission(storeDeviceToken) {
-    console.log('requesting permission...');
     messaging()
       .requestPermission()
       .then(res => {
@@ -46,7 +40,6 @@ class FcmNotificationServices {
   }
 
   addNotificationListeners(storeDeviceToken, onMessage) {
-    console.log('adding notification listeners...');
     this.messageListener = messaging().onMessage(async message => {
       if (message) {
         onMessage(message, 'foreground');

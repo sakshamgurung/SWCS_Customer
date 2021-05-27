@@ -15,6 +15,8 @@ export default function RequestDetail({customerRequest, wasteDescriptionData}) {
         <CardSection>
           <Text>{companyId.email}</Text>
           <Text>{companyId.mobileNo}</Text>
+        </CardSection>
+        <CardSection>
           <Text>Service type:{requestType}</Text>
           <Text>Request status:{requestStatus}</Text>
           <Text>Work description: {workDescription}</Text>

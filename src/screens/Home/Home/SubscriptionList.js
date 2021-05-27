@@ -23,7 +23,6 @@ export default function SubscriptionList({data}) {
 
   goToDetail = (item, index) => {
     navigation.navigate('CompanyIndex', {
-      subscriptionIndex: index,
       companyId: item.companyId._id,
     });
   };

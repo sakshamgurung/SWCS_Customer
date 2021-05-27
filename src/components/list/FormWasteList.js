@@ -99,7 +99,7 @@ function Item({item, index, toggleDataSelection, amtDataChanged}) {
   );
 }
 
-export default function FormWasteList({data, dataChanged}) {
+export default function FormWasteList({data, dataChanged, forScreen}) {
   if (!_.isEmpty(data)) {
     const cloneData = _.cloneDeep(data);
     for (let d of cloneData) {
@@ -114,12 +114,12 @@ export default function FormWasteList({data, dataChanged}) {
     const [itemData, setItemData] = useState(cloneData);
 
     const itemDataChanged = data => {
+      const formatedItemData = [];
       const {property, index, value} = data;
       const tempItemData = _.cloneDeep(itemData);
       tempItemData[index][`${property}`] = value;
       setItemData(tempItemData);
 
-      const formatedItemData = [];
       tempItemData.forEach(e => {
         if (e.isSelected) {
           formatedItemData.push({
@@ -129,7 +129,12 @@ export default function FormWasteList({data, dataChanged}) {
           });
         }
       });
-      dataChanged({property: 'wasteDescription', data: formatedItemData});
+
+      if (forScreen == 'dumpWaste') {
+        dataChanged(formatedItemData);
+      } else {
+        dataChanged({property: 'wasteDescription', data: formatedItemData});
+      }
     };
 
     return (

@@ -15,12 +15,10 @@ import {connect} from 'react-redux';
 
 import {actions as homeActions} from 'store/ducks/homeDuck';
 import {FormWasteList} from 'components/list';
-import {WorkDescription} from 'components/input';
 import {Card, CardSection} from 'components/card';
-import {renderHeader} from './SubscriptionFormUtil';
-import {processWasteListData} from './Request/RequestIndexUtil';
+import {renderHeader, processWasteListData} from './DumpWasteFormUtil';
 
-class SubscriptionForm extends Component {
+class DumpWasteForm extends Component {
   componentDidMount() {
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -33,15 +31,7 @@ class SubscriptionForm extends Component {
   }
 
   goBack = () => {
-    const {route} = this.props;
-    const {thunkResetCustomerRequest} = this.props;
-    const {mode} = route.params;
-    let screenName;
-    if (mode == 'default') {
-      screenName = 'CompanyIndex';
-    } else if (mode == 'edit') {
-      screenName = 'RequestIndex';
-    }
+    const {navigation, wasteDumpDataChanged} = this.props;
     Alert.alert(
       'Do you want to cancel?',
       'Selecting yes will discard your progress.',
@@ -49,7 +39,10 @@ class SubscriptionForm extends Component {
         {text: 'No'},
         {
           text: 'Yes',
-          onPress: () => thunkResetCustomerRequest(screenName),
+          onPress: () => {
+            wasteDumpDataChanged([]);
+            navigation.navigate('MapProfile');
+          },
         },
       ],
       {
@@ -60,18 +53,18 @@ class SubscriptionForm extends Component {
   };
 
   goNext = () => {
-    const {navigation, route, customerRequest} = this.props;
-    const {params} = route;
-    const {workDescription, wasteDescription} = customerRequest;
+    const {route, wasteDumpData} = this.props;
+    const {thunkPostWasteDump, thunkUpdateWasteDump} = this.props;
+    const {mode, companyId, selectedGeoObjectId} = route.params;
 
-    if (_.isEmpty(wasteDescription)) {
+    if (_.isEmpty(wasteDumpData)) {
       Alert.alert('Select atleast one waste item', '', [], {
         cancelable: true,
       });
       return;
     }
 
-    for (let e of wasteDescription) {
+    for (let e of wasteDumpData) {
       if (_.isEmpty(e.amount)) {
         Alert.alert(
           'Fill approx. amount',
@@ -84,34 +77,24 @@ class SubscriptionForm extends Component {
         return;
       }
     }
-
-    if (_.isEmpty(workDescription)) {
-      Alert.alert(
-        'Add work description',
-        'Add work description to explain your work',
-        [],
-        {
-          cancelable: true,
-        },
-      );
-      return;
+    if (mode == 'default') {
+      thunkPostWasteDump(companyId, selectedGeoObjectId, 'MapProfile');
+    } else if (mode == 'edit') {
+      thunkUpdateWasteDump(companyId, selectedGeoObjectId, 'MapProfile');
     }
-
-    navigation.navigate('LocationPicker', params);
   };
 
   render() {
-    const {route, listItemData, customerRequest} = this.props;
-    const {customerRequestChanged} = this.props;
-
+    const {route, listItemData, wasteDumpData} = this.props;
+    const {wasteDumpDataChanged} = this.props;
     const {mode} = route.params;
     const {wasteList} = listItemData;
-    const {workDescription} = customerRequest;
     let data = wasteList;
+
     if (mode == 'edit') {
       const {modifiedWasteList} = processWasteListData(
         wasteList,
-        customerRequest,
+        wasteDumpData,
       );
       data = modifiedWasteList;
     }
@@ -121,17 +104,15 @@ class SubscriptionForm extends Component {
         <SafeAreaView
           style={{flex: 1, backgroundColor: 'rgba(62, 115, 222, 1)'}}>
           {renderHeader(this.goBack, this.goNext)}
-          <Card>
-            <Text>Work description</Text>
-            <WorkDescription
-              value={workDescription}
-              onChangeText={customerRequestChanged}
-            />
-          </Card>
+
           <Card>
             <ScrollView scrollEventThrottle={5} showsVerticalScrollIndicator>
               <Text>Waste list</Text>
-              <FormWasteList data={data} dataChanged={customerRequestChanged} />
+              <FormWasteList
+                data={data}
+                dataChanged={wasteDumpDataChanged}
+                forScreen={'dumpWaste'}
+              />
             </ScrollView>
           </Card>
         </SafeAreaView>
@@ -148,4 +129,4 @@ const mapDispatchToProps = dispatch => {
   return {...bindActionCreators(homeActions, dispatch)};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubscriptionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(DumpWasteForm);

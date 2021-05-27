@@ -27,6 +27,7 @@ const getTabBarVisibility = route => {
     'CompanyIndex',
     'SubscriptionForm',
     'LocationPicker',
+    'MapProfile',
     'RequestIndex',
   ];
   if (_.includes(noNavScreen, routeName)) {

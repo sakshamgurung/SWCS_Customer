@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, Pressable, StyleSheet} from 'react-native';
 
-export default function BtnContained({
+export default function BtnOutline({
   onPress,
   btnStyle,
   text,
@@ -21,16 +21,17 @@ export default function BtnContained({
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    backgroundColor: 'navy',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'baseline',
+    borderWidth: 1,
     borderRadius: 5,
+    borderColor: 'navy',
     height: 40,
     paddingHorizontal: 10,
   },
   buttonText: {
-    color: 'white',
+    color: 'navy',
     fontSize: 20,
     fontFamily: 'sans-serif',
   },

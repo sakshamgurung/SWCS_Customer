@@ -34,17 +34,17 @@ function Item({item}) {
       <Text>
         {item.price} per {item.quantity} {item.unit}
       </Text>
-      <Pressable onPress={toggleModalWasteList}>
+      <View style={{flexDirection: 'row'}}>
+        <Text>{item.amount}</Text>
+        <Text style={{color: 'black'}}>{item.unit}</Text>
+      </View>
+      <Pressable onPress={toggleModalWasteList} style={styles.infoIcon}>
         <MaterialCommIcon
           name="information"
           color="rgba(0, 0, 0, 1)"
           size={24}
         />
       </Pressable>
-      <View style={{flexDirection: 'row'}}>
-        <Text>{item.amount}</Text>
-        <Text style={{color: 'black'}}>{item.amountUnit}</Text>
-      </View>
       {renderModalWasteList()}
     </CardSection>
   );
@@ -72,5 +72,10 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingVertical: 0,
     marginRight: 10,
+  },
+  infoIcon: {
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    padding: 2,
   },
 });

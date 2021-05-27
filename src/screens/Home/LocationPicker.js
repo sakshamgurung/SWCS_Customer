@@ -6,17 +6,17 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import MapView, {AnimatedRegion} from 'react-native-maps';
 
 import _ from 'lodash';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import MapView, {AnimatedRegion} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import pointInPolygon from 'point-in-polygon';
 import MaterialCommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {mapStyle} from './mapStyle';
 import {actions as homeActions} from 'store/ducks/homeDuck';
+import {mapStyle} from './mapStyle';
 import {
   Point,
   renderHeader,

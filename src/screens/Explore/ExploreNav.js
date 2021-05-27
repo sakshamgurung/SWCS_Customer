@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import MapScreen from './Explore/MapScreen';
+import ExploreIndex from './ExploreIndex';
 
 const ExploreStack = createStackNavigator();
 
 const ExploreNav = () => (
-  <ExploreStack.Navigator>
-    <ExploreStack.Screen name="Map" component={MapScreen} />
+  <ExploreStack.Navigator headerMode="none">
+    <ExploreStack.Screen name="ExploreIndex" component={ExploreIndex} />
   </ExploreStack.Navigator>
 );
 

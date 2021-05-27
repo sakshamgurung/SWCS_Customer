@@ -20,11 +20,9 @@ export class Login extends Component {
   }
 
   storeDeviceToken = token => {
-    console.log('storing device token...');
     if (!_.isEmpty(token)) {
       this.props.storeDeviceToken(token);
     }
-    console.log('device token stored.');
   };
 
   onMessage = (message, state) => {
