@@ -2,10 +2,10 @@ import _ from 'lodash';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-import {actions as authActions} from 'store/ducks/authDuck';
-
+import {actions as authActions} from 'store/ducks/authThunk';
 import {actions as homeActions} from 'store/ducks/homeThunk';
 import {actions as inboxActions} from 'store/ducks/inboxThunk';
+import {actions as exploreActions} from 'store/ducks/exploreThunk';
 
 export function reduxStoreWrapper(WrappedComponent, reducerName) {
   const mapStateToProps = state => {
@@ -23,6 +23,9 @@ export function reduxStoreWrapper(WrappedComponent, reducerName) {
         break;
       case 'inbox':
         actions = inboxActions;
+        break;
+      case 'explore':
+        actions = exploreActions;
         break;
       default:
         actions = undefined;

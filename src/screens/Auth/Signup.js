@@ -2,10 +2,8 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, TextInput, View, Switch} from 'react-native';
 
 import _ from 'lodash';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
 
-import {actions as authActions} from 'store/ducks/authDuck';
+import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import {CardSection} from 'components/card';
 import {BtnContained} from 'components/button';
 import {typography} from 'lib/res';
@@ -110,12 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => {
-  return _.cloneDeep(state.auth);
-};
-
-const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators(authActions, dispatch)};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default reduxStoreWrapper(Signup, 'auth');

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, AnimatedRegion} from 'react-native-maps';
 
+import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
+
 export class ExploreIndex extends Component {
   constructor() {
     super();
@@ -12,6 +14,7 @@ export class ExploreIndex extends Component {
       longitudeDelta: 0.1,
     });
   }
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -24,6 +27,7 @@ export class ExploreIndex extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -32,4 +36,5 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 });
-export default ExploreIndex;
+
+export default reduxStoreWrapper(ExploreIndex, 'explore');
