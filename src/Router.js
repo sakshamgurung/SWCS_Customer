@@ -58,10 +58,6 @@ class Router extends Component {
     return (
       <NavigationContainer ref={navigationRef}>
         <SwitchStack.Navigator headerMode="none">
-          {/* <SwitchStack.Screen
-            name="SubscriptionForm"
-            component={SubscriptionForm}
-          /> */}
           {isLoggedIn ? (
             <SwitchStack.Screen name="Main" component={MainBottomTabNav} />
           ) : (
