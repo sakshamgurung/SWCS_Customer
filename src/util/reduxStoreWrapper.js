@@ -3,8 +3,8 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 import {actions as authActions} from 'store/ducks/authDuck';
-import {actions as homeActions} from 'store/ducks/homeDuck';
 
+import {actions as homeActions} from 'store/ducks/homeThunk';
 import {actions as inboxActions} from 'store/ducks/inboxThunk';
 
 export function reduxStoreWrapper(WrappedComponent, reducerName) {

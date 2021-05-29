@@ -10,10 +10,8 @@ import {
 } from 'react-native';
 
 import _ from 'lodash';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
 
-import {actions as homeActions} from 'store/ducks/homeDuck';
+import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import {FormWasteList} from 'components/list';
 import {WorkDescription} from 'components/input';
 import {Card, CardSection} from 'components/card';
@@ -33,7 +31,7 @@ class SubscriptionForm extends Component {
   }
 
   goBack = () => {
-    const {route} = this.props;
+    const {route, navigation} = this.props;
     const {resetCustomerRequest} = this.props;
     const {mode} = route.params;
     let screenName;
@@ -143,12 +141,4 @@ class SubscriptionForm extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return _.cloneDeep(state.home);
-};
-
-const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators(homeActions, dispatch)};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SubscriptionForm);
+export default reduxStoreWrapper(SubscriptionForm, 'home');

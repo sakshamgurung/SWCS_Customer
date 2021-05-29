@@ -2,10 +2,8 @@ import React, {Component} from 'react';
 import {Text, SafeAreaView} from 'react-native';
 
 import _ from 'lodash';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
 
-import {actions as homeActions} from 'store/ducks/homeDuck';
+import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import {renderHeader, renderServiceTypes} from './CompanyIndexUtil';
 import AboutCompany from './AboutCompany';
 import {BtnContained} from 'components/button';
@@ -51,12 +49,4 @@ export class CompanyIndex extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return _.cloneDeep(state.home);
-};
-
-const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators(homeActions, dispatch)};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CompanyIndex);
+export default reduxStoreWrapper(CompanyIndex, 'home');

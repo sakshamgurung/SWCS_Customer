@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {actions as homeActions, internalActions} from './homeDuck';
 import {navigate} from '../navigationService';
 import {requestErrorLog} from 'util/log';
 import {
@@ -18,7 +19,7 @@ import {
 
 const thunkFetchHomeListData = () => async dispatch => {
   try {
-    dispatch(fetchHomeListData());
+    dispatch(internalActions.fetchHomeListData());
 
     const customerId = await AsyncStorage.getItem('customerId');
 
@@ -35,33 +36,33 @@ const thunkFetchHomeListData = () => async dispatch => {
       });
     }
     dispatch(
-      fetchHomeListDataSuccess({
+      internalActions.fetchHomeListDataSuccess({
         property: 'allServiceListData',
         data: allServiceRes.data,
       }),
     );
     dispatch(
-      fetchHomeListDataSuccess({
+      internalActions.fetchHomeListDataSuccess({
         property: 'requestListData',
         data: requestRes.data,
       }),
     );
     dispatch(
-      fetchHomeListDataSuccess({
+      internalActions.fetchHomeListDataSuccess({
         property: 'subscriptionListData',
         data: subscriptionRes.data,
       }),
     );
   } catch (err) {
     requestErrorLog(err);
-    dispatch(fetchHomeListDataFailed('Data failed to load'));
+    dispatch(internalActions.fetchHomeListDataFailed('Data failed to load'));
   }
 };
 
 const thunkFetchListItemData =
   (listItemType, companyId, itemId) => async (dispatch, getState) => {
     try {
-      dispatch(fetchListItemData());
+      dispatch(internalActions.fetchListItemData());
       const customerId = await AsyncStorage.getItem('customerId');
 
       if (listItemType == 'aboutCompany') {
@@ -90,7 +91,7 @@ const thunkFetchListItemData =
         ]);
 
         dispatch(
-          fetchListItemDataSuccess({
+          internalActions.fetchListItemDataSuccess({
             data: {
               companyDetail: companyDetailRes.data[0],
               companyServiceDetail: companyServiceDetailRes.data[0],
@@ -134,7 +135,7 @@ const thunkFetchListItemData =
         }
 
         dispatch(
-          fetchListItemDataSuccess({
+          internalActions.fetchListItemDataSuccess({
             data: {
               companyDetail: companyDetailRes.data[0],
               companyServiceDetail: companyServiceDetailRes.data[0],
@@ -148,34 +149,34 @@ const thunkFetchListItemData =
       }
     } catch (err) {
       requestErrorLog(err);
-      dispatch(fetchListItemDataFailed('Data failed to load'));
+      internalActions.dispatch(fetchListItemDataFailed('Data failed to load'));
     }
   };
 
 const thunkFetchGeoObjects = companyId => async (dispatch, getState) => {
   try {
-    dispatch(fetchGeoObjects());
+    dispatch(internalActions.fetchGeoObjects());
 
     const [trackRes, zoneRes] = await Promise.all([
       Client.get(GeoObjectUrl.getAll(companyId, 'track')),
       Client.get(GeoObjectUrl.getAll(companyId, 'zone')),
     ]);
     dispatch(
-      fetchGeoObjectsSuccess({
+      internalActions.fetchGeoObjectsSuccess({
         track: trackRes.data,
         zone: zoneRes.data,
       }),
     );
   } catch (err) {
     requestErrorLog(err);
-    dispatch(fetchGeoObjectsFailed('Data failed to load'));
+    dispatch(internalActions.fetchGeoObjectsFailed('Data failed to load'));
   }
 };
 
 const thunkPostCustomerRequest =
   (companyId, serviceType, screenName) => async (dispatch, getState) => {
     try {
-      dispatch(postCustomerRequest());
+      dispatch(internalActions.postCustomerRequest());
 
       const customerId = await AsyncStorage.getItem('customerId');
 
@@ -217,25 +218,27 @@ const thunkPostCustomerRequest =
 
       if (customerRequestRes.status == 200) {
         dispatch(
-          postCustomerRequestSuccess({
+          internalActions.postCustomerRequestSuccess({
             companyServicesAndStatus,
             msg: 'Request send success',
           }),
         );
-        dispatch(resetCustomerRequest());
+        dispatch(homeActions.resetCustomerRequest());
         navigate(screenName);
       }
     } catch (err) {
       requestErrorLog(err);
-      dispatch(postCustomerRequestFailed('Failed to post request'));
-      dispatch(resetCustomerRequest());
+      dispatch(
+        internalActions.postCustomerRequestFailed('Failed to post request'),
+      );
+      dispatch(homeActions.resetCustomerRequest());
       navigate(screenName);
     }
   };
 
 const thunkUpdateCustomerRequest = screenName => async (dispatch, getState) => {
   try {
-    dispatch(updateCustomerRequest());
+    dispatch(internalActions.updateCustomerRequest());
 
     const customerRequest = _.cloneDeep(
       getState().home.listItemData.customerRequest,
@@ -261,18 +264,20 @@ const thunkUpdateCustomerRequest = screenName => async (dispatch, getState) => {
 
     if (customerRequestRes.status == 200) {
       dispatch(
-        updateCustomerRequestSuccess({
+        internalActions.updateCustomerRequestSuccess({
           msg: 'Request update success',
           customerRequest: modifiedCustomerRequest,
         }),
       );
-      dispatch(resetCustomerRequest());
+      dispatch(homeActions.resetCustomerRequest());
       navigate(screenName);
     }
   } catch (err) {
     requestErrorLog(err);
-    dispatch(updateCustomerRequestFailed('Failed to update request'));
-    dispatch(resetCustomerRequest());
+    dispatch(
+      internalActions.updateCustomerRequestFailed('Failed to update request'),
+    );
+    dispatch(homeActions.resetCustomerRequest());
     navigate(screenName);
   }
 };
@@ -280,27 +285,29 @@ const thunkUpdateCustomerRequest = screenName => async (dispatch, getState) => {
 const thunkDeleteCustomerRequest =
   (customerRequestId, screenName) => async (dispatch, getState) => {
     try {
-      dispatch(deleteCustomerRequest());
-      dispatch(toggleHeaderOptions());
+      dispatch(internalActions.deleteCustomerRequest());
+      dispatch(homeActions.toggleHeaderOptions());
 
       await Client.delete(CustomerRequestUrl.delete(customerRequestId));
 
       dispatch(
-        deleteCustomerRequestSuccess({
+        internalActions.deleteCustomerRequestSuccess({
           msg: 'Request update success',
         }),
       );
       navigate(screenName);
     } catch (err) {
       requestErrorLog(err);
-      dispatch(deleteCustomerRequestFailed('Failed to update request'));
+      dispatch(
+        internalActions.deleteCustomerRequestFailed('Failed to update request'),
+      );
       navigate(screenName);
     }
   };
 
 const thunkFetchMapProfile = companyId => async (dispatch, getState) => {
   try {
-    dispatch(fetchMapProfile());
+    dispatch(internalActions.fetchMapProfile());
     const customerId = await AsyncStorage.getItem('customerId');
     const [
       companyDetailRes,
@@ -344,32 +351,32 @@ const thunkFetchMapProfile = companyId => async (dispatch, getState) => {
       }
     }
     dispatch(
-      fetchMapProfileSuccess({
+      internalActions.fetchMapProfileSuccess({
         property: 'bottomSheetData',
         data: {companyDetail: companyDetailRes.data[0]},
       }),
     );
     dispatch(
-      fetchMapProfileSuccess({
+      internalActions.fetchMapProfileSuccess({
         property: 'track',
         data: trackRes.data,
       }),
     );
     dispatch(
-      fetchMapProfileSuccess({
+      internalActions.fetchMapProfileSuccess({
         property: 'zone',
         data: zoneRes.data,
       }),
     );
     dispatch(
-      fetchMapProfileSuccess({
+      internalActions.fetchMapProfileSuccess({
         property: 'customerUsedGeoObject',
         data: customerUsedGeoObjectRes.data[0],
       }),
     );
     if (!_.isEmpty(wasteDumpRes)) {
       dispatch(
-        fetchMapProfileSuccess({
+        internalActions.fetchMapProfileSuccess({
           property: 'bottomSheetData',
           data: {
             companyDetail: companyDetailRes.data[0],
@@ -382,11 +389,13 @@ const thunkFetchMapProfile = companyId => async (dispatch, getState) => {
         dw.wasteListId = dw.wasteListId._id;
         dw.amount = dw.amount.toString();
       }
-      dispatch(wasteDumpDataChanged(wasteDumpRes.data[0].dumpedWaste));
+      dispatch(
+        homeActions.wasteDumpDataChanged(wasteDumpRes.data[0].dumpedWaste),
+      );
     }
   } catch (err) {
     requestErrorLog(err);
-    dispatch(fetchMapProfileFailed('Data failed to load'));
+    dispatch(internalActions.fetchMapProfileFailed('Data failed to load'));
   }
 };
 
@@ -394,7 +403,7 @@ const thunkPostWasteDump =
   (companyId, selectedGeoObjectId, screenName) =>
   async (dispatch, getState) => {
     try {
-      dispatch(postWasteDump());
+      dispatch(internalActions.postWasteDump());
       const customerId = await AsyncStorage.getItem('customerId');
       const dumpedWaste = _.cloneDeep(getState().home.wasteDumpData);
       for (let dw of dumpedWaste) {
@@ -411,11 +420,11 @@ const thunkPostWasteDump =
 
       await Client.post(WasteDumpUrl.post(), wasteDumpData);
 
-      dispatch(postWasteDumpSuccess({msg: 'Waste dumped'}));
+      dispatch(internalActions.postWasteDumpSuccess({msg: 'Waste dumped'}));
       navigate(screenName);
     } catch (err) {
       requestErrorLog(err);
-      dispatch(postWasteDumpFailed('Data post failed'));
+      dispatch(internalActions.postWasteDumpFailed('Data post failed'));
       navigate(screenName);
     }
   };
@@ -424,7 +433,7 @@ const thunkUpdateWasteDump =
   (companyId, selectedGeoObjectId, screenName) =>
   async (dispatch, getState) => {
     try {
-      dispatch(updateWasteDump());
+      dispatch(internalActions.updateWasteDump());
       const customerId = await AsyncStorage.getItem('customerId');
       const wasteDumpId = _.clone(
         getState().home.mapProfileData.bottomSheetData.wasteDump._id,
@@ -444,18 +453,18 @@ const thunkUpdateWasteDump =
 
       await Client.put(WasteDumpUrl.put(wasteDumpId), wasteDumpData);
 
-      dispatch(updateWasteDumpSuccess({msg: 'Waste dumped'}));
+      dispatch(internalActions.updateWasteDumpSuccess({msg: 'Waste dumped'}));
       navigate(screenName);
     } catch (err) {
       requestErrorLog(err);
-      dispatch(updateWasteDumpFailed('Data post failed'));
+      dispatch(internalActions.updateWasteDumpFailed('Data post failed'));
       navigate(screenName);
     }
   };
 
 const thunkDeleteWasteDump = () => async (dispatch, getState) => {
   try {
-    dispatch(deleteWasteDump());
+    dispatch(internalActions.deleteWasteDump());
 
     const mapProfileData = _.cloneDeep(getState().home.mapProfileData);
     let {bottomSheetData, track} = mapProfileData;
@@ -473,13 +482,13 @@ const thunkDeleteWasteDump = () => async (dispatch, getState) => {
     await Client.delete(WasteDumpUrl.delete(wasteDumpId));
 
     dispatch(
-      fetchMapProfileSuccess({
+      internalActions.fetchMapProfileSuccess({
         property: 'track',
         data: track,
       }),
     );
     dispatch(
-      fetchMapProfileSuccess({
+      internalActions.fetchMapProfileSuccess({
         property: 'customerUsedGeoObject',
         data: {},
       }),
@@ -487,35 +496,41 @@ const thunkDeleteWasteDump = () => async (dispatch, getState) => {
 
     bottomSheetData.wasteDump = {};
     dispatch(
-      fetchMapProfileSuccess({
+      internalActions.fetchMapProfileSuccess({
         property: 'bottomSheetData',
         data: bottomSheetData,
       }),
     );
-    dispatch(wasteDumpDataChanged([]));
+    dispatch(homeActions.wasteDumpDataChanged([]));
     dispatch(
-      mapProfileDataChanged({property: 'isBottomSheetShown', data: false}),
+      homeActions.mapProfileDataChanged({
+        property: 'isBottomSheetShown',
+        data: false,
+      }),
     );
     dispatch(
-      mapProfileDataChanged({property: 'selectedGeoObjectId', data: ''}),
+      homeActions.mapProfileDataChanged({
+        property: 'selectedGeoObjectId',
+        data: '',
+      }),
     );
     dispatch(
-      mapProfileDataChanged({property: 'selectedGeoObjectIndex', data: -1}),
+      homeActions.mapProfileDataChanged({
+        property: 'selectedGeoObjectIndex',
+        data: -1,
+      }),
     );
-    dispatch(deleteWasteDumpSuccess({msg: 'Data delete success'}));
+    dispatch(
+      internalActions.deleteWasteDumpSuccess({msg: 'Data delete success'}),
+    );
   } catch (err) {
     requestErrorLog(err);
-    dispatch(deleteWasteDumpFailed('Data delete failed'));
+    dispatch(internalActions.deleteWasteDumpFailed('Data delete failed'));
   }
 };
 
 export const actions = {
-  tabSelected,
-  toggleHeaderOptions,
-  customerRequestChanged,
-  mapProfileDataChanged,
-  wasteDumpDataChanged,
-  resetMapProfile,
+  ...homeActions,
   thunkFetchHomeListData,
   thunkFetchListItemData,
   thunkFetchGeoObjects,

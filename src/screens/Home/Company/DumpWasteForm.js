@@ -10,10 +10,8 @@ import {
 } from 'react-native';
 
 import _ from 'lodash';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
 
-import {actions as homeActions} from 'store/ducks/homeDuck';
+import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import {FormWasteList} from 'components/list';
 import {Card, CardSection} from 'components/card';
 import {renderHeader, processWasteListData} from './DumpWasteFormUtil';
@@ -121,12 +119,4 @@ class DumpWasteForm extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return _.cloneDeep(state.home);
-};
-
-const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators(homeActions, dispatch)};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DumpWasteForm);
+export default reduxStoreWrapper(DumpWasteForm, 'home');

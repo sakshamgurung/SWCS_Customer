@@ -2,10 +2,8 @@ import React, {Component} from 'react';
 import {Text, View, SafeAreaView, Alert} from 'react-native';
 
 import _ from 'lodash';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
 
-import {actions as homeActions} from 'store/ducks/homeDuck';
+import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import MaterialCommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   renderHeader,
@@ -137,12 +135,4 @@ class RequestIndex extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return _.cloneDeep(state.home);
-};
-
-const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators(homeActions, dispatch)};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RequestIndex);
+export default reduxStoreWrapper(RequestIndex, 'home');

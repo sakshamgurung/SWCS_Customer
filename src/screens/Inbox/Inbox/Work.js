@@ -36,7 +36,7 @@ function AboutWork({data}) {
         <Text>{endTime}</Text>
         <Text>Track list for this work:</Text>
         {geoObjectTrackId.map((t, index) => (
-          <Text>{t.trackName}</Text>
+          <Text key={index}>{t.trackName}</Text>
         ))}
         <Text>Assigned:</Text>
         <Text>group: {groupName}</Text>

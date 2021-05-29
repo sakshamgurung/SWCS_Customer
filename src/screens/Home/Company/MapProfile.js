@@ -12,10 +12,8 @@ import {
 import _ from 'lodash';
 import MapView, {AnimatedRegion} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
 
-import {actions as homeActions} from 'store/ducks/homeDuck';
+import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import {mapStyle} from '../mapStyle';
 import {
   renderHeader,
@@ -198,12 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => {
-  return _.cloneDeep(state.home);
-};
-
-const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators(homeActions, dispatch)};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MapProfile);
+export default reduxStoreWrapper(MapProfile, 'home');
