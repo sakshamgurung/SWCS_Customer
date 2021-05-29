@@ -484,11 +484,6 @@ const deleteWasteDumpFailed = failedData => {
   return {type: types.DELETE_WASTE_DUMP_FAILED, payload: failedData};
 };
 
-const thunkResetCustomerRequest = screenName => async dispatch => {
-  dispatch(resetCustomerRequest());
-  navigate(screenName);
-};
-
 const thunkFetchHomeListData = () => async dispatch => {
   try {
     dispatch(fetchHomeListData());
@@ -982,6 +977,49 @@ const thunkDeleteWasteDump = () => async (dispatch, getState) => {
   }
 };
 
+export const internalActions = {
+  fetchHomeListData,
+  fetchHomeListDataSuccess,
+  fetchHomeListDataFailed,
+
+  fetchListItemData,
+  fetchListItemDataSuccess,
+  fetchListItemDataFailed,
+
+  fetchGeoObjects,
+  fetchGeoObjectsSuccess,
+  fetchGeoObjectsFailed,
+
+  resetCustomerRequest,
+  postCustomerRequest,
+  postCustomerRequestSuccess,
+  postCustomerRequestFailed,
+
+  updateCustomerRequest,
+  updateCustomerRequestSuccess,
+  updateCustomerRequestFailed,
+
+  deleteCustomerRequest,
+  deleteCustomerRequestSuccess,
+  deleteCustomerRequestFailed,
+
+  fetchMapProfile,
+  fetchMapProfileSuccess,
+  fetchMapProfileFailed,
+
+  postWasteDump,
+  postWasteDumpSuccess,
+  postWasteDumpFailed,
+
+  updateWasteDump,
+  updateWasteDumpSuccess,
+  updateWasteDumpFailed,
+
+  deleteWasteDump,
+  deleteWasteDumpSuccess,
+  deleteWasteDumpFailed,
+};
+
 export const actions = {
   tabSelected,
   toggleHeaderOptions,
@@ -989,7 +1027,6 @@ export const actions = {
   mapProfileDataChanged,
   wasteDumpDataChanged,
   resetMapProfile,
-  thunkResetCustomerRequest,
   thunkFetchHomeListData,
   thunkFetchListItemData,
   thunkFetchGeoObjects,

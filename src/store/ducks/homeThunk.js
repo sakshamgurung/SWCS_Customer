@@ -16,11 +16,6 @@ import {
   WasteDumpUrl,
 } from 'api';
 
-const thunkResetCustomerRequest = screenName => async dispatch => {
-  dispatch(resetCustomerRequest());
-  navigate(screenName);
-};
-
 const thunkFetchHomeListData = () => async dispatch => {
   try {
     dispatch(fetchHomeListData());
@@ -521,7 +516,6 @@ export const actions = {
   mapProfileDataChanged,
   wasteDumpDataChanged,
   resetMapProfile,
-  thunkResetCustomerRequest,
   thunkFetchHomeListData,
   thunkFetchListItemData,
   thunkFetchGeoObjects,

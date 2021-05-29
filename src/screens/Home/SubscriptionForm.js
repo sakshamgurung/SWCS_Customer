@@ -34,7 +34,7 @@ class SubscriptionForm extends Component {
 
   goBack = () => {
     const {route} = this.props;
-    const {thunkResetCustomerRequest} = this.props;
+    const {resetCustomerRequest} = this.props;
     const {mode} = route.params;
     let screenName;
     if (mode == 'default') {
@@ -49,7 +49,10 @@ class SubscriptionForm extends Component {
         {text: 'No'},
         {
           text: 'Yes',
-          onPress: () => thunkResetCustomerRequest(screenName),
+          onPress: () => {
+            resetCustomerRequest();
+            navigation.navigate(screenName);
+          },
         },
       ],
       {
