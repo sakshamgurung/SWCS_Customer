@@ -6,8 +6,8 @@ import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// import {} from 'store/ducks/inboxDuck'
 import {Card, CardSection} from 'components/card';
+import _ from 'lodash';
 
 export default function NotificationList({data}) {
   const dispatch = useDispatch();
@@ -38,7 +38,11 @@ export default function NotificationList({data}) {
       }
       case 'requestAccepted':
       case 'requestAssigned': {
-        screen = 'HomeIndex';
+        screen = 'RequestIndex';
+        params = {
+          companyId: data.from.id,
+          customerRequestId: data.targetCollection.id,
+        };
         break;
       }
       case 'requestFinished': {
@@ -53,7 +57,12 @@ export default function NotificationList({data}) {
         break;
       }
     }
-    navigation.navigate(screen);
+
+    if (!_.isEmpty(params)) {
+      navigation.navigate(screen, params);
+    } else {
+      navigation.navigate(screen);
+    }
   };
 
   const Item = ({item, index}) => {

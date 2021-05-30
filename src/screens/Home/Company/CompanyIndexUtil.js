@@ -112,6 +112,8 @@ export const renderServiceTypes = (
       );
     }
     return <View style={styles.serviceBtnContainer}>{arr}</View>;
+  } else {
+    return null;
   }
 };
 

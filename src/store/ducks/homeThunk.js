@@ -314,12 +314,18 @@ const thunkFetchMapProfile = companyId => async (dispatch, getState) => {
       trackRes,
       zoneRes,
       customerUsedGeoObjectRes,
+      utilActionRes,
       wasteDumpRes,
     ] = await Promise.all([
       Client.get(CompanyUrl.getByRef('company-detail', 'companyId', companyId)),
       Client.get(GeoObjectUrl.getByRef('track', 'companyId', companyId)),
       Client.get(GeoObjectUrl.getByRef('zone', 'companyId', companyId)),
       Client.get(CustomerUsedGeoObjectUrl.getByRef('customerId', customerId)),
+      Client.post(UtilActionUrl.verify(), {
+        type: 'companyServicesAndStatus',
+        customerId,
+        companyId: companyId,
+      }),
       Client.get(WasteDumpUrl.getByRef('customerId', customerId), {
         params: {companyId},
       }),
@@ -350,6 +356,16 @@ const thunkFetchMapProfile = companyId => async (dispatch, getState) => {
         }
       }
     }
+
+    const companyServicesAndStatus =
+      utilActionRes.data.companyServicesAndStatus;
+    const {subscription} = companyServicesAndStatus;
+    for (let e of track) {
+      if (subscription != 'unsubscribe') {
+        e.isDumpBtnPressable = false;
+      }
+    }
+
     dispatch(
       internalActions.fetchMapProfileSuccess({
         property: 'bottomSheetData',
