@@ -11,13 +11,82 @@ import {BtnContained} from 'components/button';
 
 export class CompanyIndex extends Component {
   componentDidMount() {
+    this.refresh = this.props.navigation.addListener('focus', this.remoteCall);
+  }
+
+  componentWillUnmount() {
+    this.refresh();
+  }
+
+  remoteCall = () => {
     const {companyId} = this.props.route.params;
     this.props.thunkFetchListItemData('aboutCompany', companyId, undefined);
-  }
+  };
 
   goBack = () => {
     const {navigation} = this.props;
     navigation.dispatch(CommonActions.goBack());
+  };
+
+  requestSubscribe = () => {
+    const {navigation, thunkPostCustomerRequest} = this.props;
+    const {route, listItemData} = this.props;
+
+    const {companyId} = route.params;
+    const {subscription, subscriptionRequestId} =
+      listItemData.companyServicesAndStatus;
+
+    if (subscription == 'active') {
+      thunkPostCustomerRequest(companyId, 'subscription');
+      this.remoteCall();
+    } else if (subscription == 'pending') {
+      navigation.navigate('RequestIndex', {
+        customerRequestId: subscriptionRequestId,
+        companyId,
+      });
+    }
+  };
+
+  requestSubscribeWithLocation = () => {
+    const {navigation} = this.props;
+    const {route, listItemData} = this.props;
+
+    const {companyId} = route.params;
+    const {subscriptionLoc, subscriptionLocRequestId} =
+      listItemData.companyServicesAndStatus;
+
+    if (subscriptionLoc == 'active') {
+      navigation.navigate('SubscriptionForm', {
+        companyId,
+        serviceType: 'subscription with location',
+        mode: 'default',
+      });
+    } else if (subscriptionLoc == 'pending') {
+      navigation.navigate('RequestIndex', {
+        customerRequestId: subscriptionLocRequestId,
+        companyId,
+      });
+    }
+  };
+
+  requestOneTimeDeal = () => {
+    const {navigation} = this.props;
+    const {route, listItemData} = this.props;
+
+    const {companyId} = route.params;
+    const {oneTime, oneTimeRequestId} = listItemData.companyServicesAndStatus;
+    if (oneTime == 'active') {
+      navigation.navigate('SubscriptionForm', {
+        companyId,
+        serviceType: 'one time',
+        mode: 'default',
+      });
+    } else {
+      navigation.navigate('RequestIndex', {
+        customerRequestId: oneTimeRequestId,
+        companyId,
+      });
+    }
   };
 
   showMap = () => {
@@ -27,8 +96,7 @@ export class CompanyIndex extends Component {
   };
 
   render() {
-    const {route, listItemData} = this.props;
-    const {navigation, thunkPostCustomerRequest} = this.props;
+    const {listItemData} = this.props;
 
     let title = '';
     if (listItemData.companyDetail) {
@@ -39,11 +107,11 @@ export class CompanyIndex extends Component {
         {renderHeader(title, this.goBack)}
         {renderServiceTypes(
           listItemData,
-          navigation,
-          route.params,
-          thunkPostCustomerRequest,
+          this.requestSubscribe,
+          this.requestSubscribeWithLocation,
+          this.requestOneTimeDeal,
+          this.showMap,
         )}
-        <BtnContained text="Show in Map" onPress={this.showMap} />
         <AboutCompany data={listItemData} />
       </SafeAreaView>
     );

@@ -161,13 +161,10 @@ export default function reducer(state = initialState, action) {
     }
 
     case types.POST_CUSTOMER_REQUEST_SUCCESS: {
-      const {msg, companyServicesAndStatus} = action.payload;
-      const listItemData = _.cloneDeep(state.listItemData);
-      listItemData.companyServicesAndStatus = companyServicesAndStatus;
+      const {msg} = action.payload;
       return {
         ...state,
         loading: false,
-        listItemData,
         logMessage: {type: 'success', msg},
       };
     }

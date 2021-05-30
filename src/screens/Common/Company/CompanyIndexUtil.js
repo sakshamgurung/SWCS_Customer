@@ -25,21 +25,15 @@ export const renderHeader = (title, onPressBack) => {
 
 export const renderServiceTypes = (
   data,
-  navigation,
-  params,
   onPressSubscribe,
+  onPressSubscribeWithLocation,
+  onPressOneTimeDeal,
+  onPressShowMap,
 ) => {
   if (!_.isEmpty(data)) {
-    const {companyId} = params;
     const {serviceType} = data.companyServiceDetail;
-    const {
-      subscription,
-      subscriptionLoc,
-      oneTime,
-      subscriptionRequestId,
-      subscriptionLocRequestId,
-      oneTimeRequestId,
-    } = data.companyServicesAndStatus;
+    const {subscription, subscriptionLoc, oneTime} =
+      data.companyServicesAndStatus;
     const arr = [];
 
     if (_.includes(serviceType, 'subscription')) {
@@ -47,19 +41,14 @@ export const renderServiceTypes = (
         <BtnContained
           key="1"
           disabled={subscription == 'deactive' ? true : false}
-          onPress={() => {
-            if (subscription == 'active') {
-              onPressSubscribe(companyId, 'subscription', 'CompanyIndex');
-            } else if (subscription == 'pending') {
-              navigation.navigate('RequestIndex', {
-                customerRequestId: subscriptionRequestId,
-                companyId,
-              });
-            }
-          }}
-          btnStyle={{
-            backgroundColor: subscription == 'deactive' ? 'grey' : 'green',
-          }}
+          onPress={onPressSubscribe}
+          btnStyle={[
+            {
+              backgroundColor: subscription == 'deactive' ? 'grey' : 'green',
+            },
+            styles.serviceBtn,
+          ]}
+          textStyle={[styles.serviceBtnText]}
           text={
             subscription == 'pending'
               ? 'Subscribe(pending)'
@@ -76,23 +65,15 @@ export const renderServiceTypes = (
         <BtnContained
           key="2"
           disabled={subscriptionLoc == 'deactive' ? true : false}
-          onPress={() => {
-            if (subscriptionLoc == 'active') {
-              navigation.navigate('SubscriptionForm', {
-                companyId,
-                serviceType: 'subscription with location',
-                mode: 'default',
-              });
-            } else if (subscriptionLoc == 'pending') {
-              navigation.navigate('RequestIndex', {
-                customerRequestId: subscriptionLocRequestId,
-                companyId,
-              });
-            }
-          }}
-          btnStyle={{
-            backgroundColor: subscriptionLoc == 'deactive' ? 'grey' : 'tomato',
-          }}
+          onPress={onPressSubscribeWithLocation}
+          btnStyle={[
+            {
+              backgroundColor:
+                subscriptionLoc == 'deactive' ? 'grey' : 'tomato',
+            },
+            styles.serviceBtn,
+          ]}
+          textStyle={[styles.serviceBtnText]}
           text={
             subscriptionLoc == 'pending'
               ? 'Subscribe + location(pending)'
@@ -106,27 +87,24 @@ export const renderServiceTypes = (
       arr.push(
         <BtnContained
           key="3"
-          onPress={() => {
-            if (oneTime == 'active') {
-              navigation.navigate('SubscriptionForm', {
-                companyId,
-                serviceType: 'one time',
-                mode: 'default',
-              });
-            } else {
-              navigation.navigate('RequestIndex', {
-                customerRequestId: oneTimeRequestId,
-                companyId,
-              });
-            }
-          }}
-          btnStyle={{backgroundColor: 'navy'}}
+          onPress={onPressOneTimeDeal}
+          btnStyle={[{backgroundColor: 'navy'}, styles.serviceBtn]}
+          textStyle={[styles.serviceBtnText]}
           text={
             oneTime == 'active' ? 'One time deal' : `One time deal(${oneTime})`
           }
         />,
       );
     }
+    arr.push(
+      <BtnContained
+        key="4"
+        btnStyle={[{backgroundColor: 'navy'}, styles.serviceBtn]}
+        textStyle={[styles.serviceBtnText]}
+        text="Show in Map"
+        onPress={onPressShowMap}
+      />,
+    );
 
     return <View style={styles.serviceBtnContainer}>{arr}</View>;
   } else {
@@ -135,8 +113,10 @@ export const renderServiceTypes = (
 };
 
 const styles = StyleSheet.create({
-  serviceBtnContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  serviceBtnContainer: {},
+  serviceBtn: {height: 30},
+  serviceBtnText: {
+    fontFamily: 'sans-serif',
+    fontSize: 14,
   },
 });

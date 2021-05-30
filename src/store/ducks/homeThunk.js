@@ -174,7 +174,7 @@ const thunkFetchGeoObjects = companyId => async (dispatch, getState) => {
 };
 
 const thunkPostCustomerRequest =
-  (companyId, serviceType, screenName) => async (dispatch, getState) => {
+  (companyId, serviceType) => async (dispatch, getState) => {
     try {
       dispatch(internalActions.postCustomerRequest());
 
@@ -187,56 +187,31 @@ const thunkPostCustomerRequest =
       customerRequest.companyId = companyId;
       customerRequest.customerId = customerId;
       customerRequest.requestType = serviceType;
-      const companyServicesAndStatus = _.cloneDeep(
-        getState().home.listItemData.companyServicesAndStatus,
-      );
 
-      switch (serviceType) {
-        case 'subscription': {
-          companyServicesAndStatus.subscription = 'pending';
-          companyServicesAndStatus.subscriptionLoc = 'deactive';
-          delete customerRequest.requestCoordinate;
-          delete customerRequest.wasteDescription;
-          delete customerRequest.workDescription;
-          break;
-        }
-        case 'subscription with location': {
-          companyServicesAndStatus.subscription = 'deactive';
-          companyServicesAndStatus.subscriptionLoc = 'pending';
-          break;
-        }
-        case 'one time': {
-          companyServicesAndStatus.oneTime = 'pending';
-          break;
-        }
+      if (serviceType == 'subscription') {
+        delete customerRequest.requestCoordinate;
+        delete customerRequest.wasteDescription;
+        delete customerRequest.workDescription;
       }
 
-      const customerRequestRes = await Client.post(
-        CustomerRequestUrl.post(),
-        customerRequest,
-      );
+      await Client.post(CustomerRequestUrl.post(), customerRequest);
 
-      if (customerRequestRes.status == 200) {
-        dispatch(
-          internalActions.postCustomerRequestSuccess({
-            companyServicesAndStatus,
-            msg: 'Request send success',
-          }),
-        );
-        dispatch(homeActions.resetCustomerRequest());
-        navigate(screenName);
-      }
+      dispatch(
+        internalActions.postCustomerRequestSuccess({
+          msg: 'Request send success',
+        }),
+      );
+      dispatch(homeActions.resetCustomerRequest());
     } catch (err) {
       requestErrorLog(err);
       dispatch(
         internalActions.postCustomerRequestFailed('Failed to post request'),
       );
       dispatch(homeActions.resetCustomerRequest());
-      navigate(screenName);
     }
   };
 
-const thunkUpdateCustomerRequest = screenName => async (dispatch, getState) => {
+const thunkUpdateCustomerRequest = () => async (dispatch, getState) => {
   try {
     dispatch(internalActions.updateCustomerRequest());
 
@@ -257,28 +232,24 @@ const thunkUpdateCustomerRequest = screenName => async (dispatch, getState) => {
     delete customerRequest.customerId;
     delete customerRequest.companyDetail;
 
-    const customerRequestRes = await Client.put(
+    await Client.put(
       CustomerRequestUrl.put(customerRequestId),
       customerRequest,
     );
 
-    if (customerRequestRes.status == 200) {
-      dispatch(
-        internalActions.updateCustomerRequestSuccess({
-          msg: 'Request update success',
-          customerRequest: modifiedCustomerRequest,
-        }),
-      );
-      dispatch(homeActions.resetCustomerRequest());
-      navigate(screenName);
-    }
+    dispatch(
+      internalActions.updateCustomerRequestSuccess({
+        msg: 'Request update success',
+        customerRequest: modifiedCustomerRequest,
+      }),
+    );
+    dispatch(homeActions.resetCustomerRequest());
   } catch (err) {
     requestErrorLog(err);
     dispatch(
       internalActions.updateCustomerRequestFailed('Failed to update request'),
     );
     dispatch(homeActions.resetCustomerRequest());
-    navigate(screenName);
   }
 };
 
@@ -292,13 +263,13 @@ const thunkDeleteCustomerRequest =
 
       dispatch(
         internalActions.deleteCustomerRequestSuccess({
-          msg: 'Request update success',
+          msg: 'Request delete success',
         }),
       );
     } catch (err) {
       requestErrorLog(err);
       dispatch(
-        internalActions.deleteCustomerRequestFailed('Failed to update request'),
+        internalActions.deleteCustomerRequestFailed('Failed to delete request'),
       );
     }
   };

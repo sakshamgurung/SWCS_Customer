@@ -76,6 +76,7 @@ class LocationPicker extends Component {
   };
 
   customerRequestDone = () => {
+    const {navigation} = this.props;
     const {route, customerRequest} = this.props;
     const {thunkPostCustomerRequest, thunkUpdateCustomerRequest} = this.props;
     const {companyId, serviceType, mode} = route.params;
@@ -89,11 +90,11 @@ class LocationPicker extends Component {
       return;
     }
     if (mode == 'default') {
-      const screenName = 'CompanyIndex';
-      thunkPostCustomerRequest(companyId, serviceType, screenName);
+      thunkPostCustomerRequest(companyId, serviceType);
+      navigation.navigate('CompanyIndex');
     } else if (mode == 'edit') {
-      const screenName = 'RequestIndex';
-      thunkUpdateCustomerRequest(screenName);
+      thunkUpdateCustomerRequest();
+      navigation.navigate('RequestIndex');
     }
   };
 
