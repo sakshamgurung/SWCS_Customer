@@ -14,7 +14,7 @@ import MapView, {AnimatedRegion} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 
 import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
-import {mapStyle} from '../mapStyle';
+import {mapStyle} from 'lib/res/mapStyle';
 import {
   renderHeader,
   renderTracks,

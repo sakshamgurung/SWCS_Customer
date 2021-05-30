@@ -38,7 +38,7 @@ class RequestIndex extends Component {
   };
 
   goToDelete = () => {
-    const {route} = this.props;
+    const {route, navigation} = this.props;
     const {thunkDeleteCustomerRequest} = this.props;
     const {customerRequestId} = route.params;
     Alert.alert(
@@ -49,7 +49,8 @@ class RequestIndex extends Component {
         {
           text: 'Yes',
           onPress: () => {
-            thunkDeleteCustomerRequest(customerRequestId, 'HomeIndex');
+            thunkDeleteCustomerRequest(customerRequestId);
+            navigation.navigate('HomeIndex');
           },
         },
       ],

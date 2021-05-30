@@ -14,7 +14,7 @@ import pointInPolygon from 'point-in-polygon';
 import MaterialCommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
-import {mapStyle} from './mapStyle';
+import {mapStyle} from 'lib/res/mapStyle';
 import {
   Point,
   renderHeader,

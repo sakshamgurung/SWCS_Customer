@@ -3,12 +3,13 @@ import {Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import HomeIndex from './Home/HomeIndex';
-import CompanyIndex from './Company/CompanyIndex';
-import SubscriptionForm from './SubscriptionForm';
-import LocationPicker from './LocationPicker';
-import MapProfile from './Company/MapProfile';
-import DumpWasteForm from './Company/DumpWasteForm';
-import RequestIndex from './Request/RequestIndex';
+
+import CompanyIndex from '../Common/Company/CompanyIndex';
+import SubscriptionForm from '../Common/SubscriptionForm/SubscriptionForm';
+import LocationPicker from '../Common/SubscriptionForm/LocationPicker';
+import MapProfile from '../Common/Company/MapProfile';
+import DumpWasteForm from '../Common/Company/DumpWasteForm';
+import RequestIndex from '../Common/Request/RequestIndex';
 
 const HomeStack = createStackNavigator();
 

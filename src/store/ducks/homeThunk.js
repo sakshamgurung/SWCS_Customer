@@ -283,7 +283,7 @@ const thunkUpdateCustomerRequest = screenName => async (dispatch, getState) => {
 };
 
 const thunkDeleteCustomerRequest =
-  (customerRequestId, screenName) => async (dispatch, getState) => {
+  customerRequestId => async (dispatch, getState) => {
     try {
       dispatch(internalActions.deleteCustomerRequest());
       dispatch(homeActions.toggleHeaderOptions());
@@ -295,13 +295,11 @@ const thunkDeleteCustomerRequest =
           msg: 'Request update success',
         }),
       );
-      navigate(screenName);
     } catch (err) {
       requestErrorLog(err);
       dispatch(
         internalActions.deleteCustomerRequestFailed('Failed to update request'),
       );
-      navigate(screenName);
     }
   };
 
