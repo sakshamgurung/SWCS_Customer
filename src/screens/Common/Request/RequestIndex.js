@@ -3,6 +3,7 @@ import {Text, View, SafeAreaView, Alert} from 'react-native';
 
 import _ from 'lodash';
 
+import {CommonActions} from '@react-navigation/native';
 import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import MaterialCommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
@@ -50,7 +51,7 @@ class RequestIndex extends Component {
           text: 'Yes',
           onPress: () => {
             thunkDeleteCustomerRequest(customerRequestId);
-            navigation.navigate('HomeIndex');
+            navigation.dispatch(CommonActions.goBack());
           },
         },
       ],
@@ -95,7 +96,7 @@ class RequestIndex extends Component {
 
   goBack = () => {
     const {navigation} = this.props;
-    navigation.navigate('HomeIndex');
+    navigation.dispatch(CommonActions.goBack());
   };
 
   toggleHeaderOptions = () => {
@@ -128,6 +129,7 @@ class RequestIndex extends Component {
           customerRequest,
         )}
         <RequestDetail
+          companyDetail={companyDetail}
           customerRequest={customerRequest}
           wasteDescriptionData={filteredWasteList}
         />

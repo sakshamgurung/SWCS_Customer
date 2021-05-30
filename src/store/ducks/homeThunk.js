@@ -149,7 +149,7 @@ const thunkFetchListItemData =
       }
     } catch (err) {
       requestErrorLog(err);
-      internalActions.dispatch(fetchListItemDataFailed('Data failed to load'));
+      dispatch(internalActions.fetchListItemDataFailed('Data failed to load'));
     }
   };
 

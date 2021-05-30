@@ -30,7 +30,10 @@ export default function NotificationList({data}) {
     let params = {};
     switch (data.message.data.status) {
       case 'subscribed': {
-        screen = 'HomeIndex';
+        screen = 'CompanyIndex';
+        params = {
+          companyId: data.from.id,
+        };
         break;
       }
       case 'requestDenied': {
@@ -50,7 +53,10 @@ export default function NotificationList({data}) {
       }
       case 'workConfirmed':
       case 'workOnProgress': {
-        screen = 'InboxIndex'; //for now
+        screen = 'Work';
+        params = {
+          workId: data.targetCollection.id,
+        };
         break;
       }
       case 'workFinished': {

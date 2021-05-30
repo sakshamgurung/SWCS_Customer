@@ -23,12 +23,18 @@ export default function ScheduleList({data}) {
   const gotoScreen = data => {
     let screen = undefined;
     let params = {};
+
     if (data.hasOwnProperty('workId')) {
       screen = 'Work';
       params.workId = data.workId._id;
     } else if (data.hasOwnProperty('customerRequestId')) {
-      screen = 'HomeIndex'; //just for now
+      screen = 'RequestIndex';
+      params = {
+        companyId: data.customerRequestId.companyId,
+        customerRequestId: data.customerRequestId._id,
+      };
     }
+
     navigation.navigate(screen, params);
   };
 

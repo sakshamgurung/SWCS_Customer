@@ -3,6 +3,7 @@ import {Text, SafeAreaView} from 'react-native';
 
 import _ from 'lodash';
 
+import {CommonActions} from '@react-navigation/native';
 import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import {renderHeader, renderServiceTypes} from './CompanyIndexUtil';
 import AboutCompany from './AboutCompany';
@@ -16,7 +17,7 @@ export class CompanyIndex extends Component {
 
   goBack = () => {
     const {navigation} = this.props;
-    navigation.navigate('HomeIndex');
+    navigation.dispatch(CommonActions.goBack());
   };
 
   showMap = () => {

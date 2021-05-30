@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import WasteDumpIndex from './WasteDump/WasteDumpIndex';
+import WasteDumpIndex from './WasteDumpIndex';
 
 const WasteDumpStack = createStackNavigator();
 

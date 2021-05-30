@@ -32,9 +32,16 @@ export const renderServiceTypes = (
   if (!_.isEmpty(data)) {
     const {companyId} = params;
     const {serviceType} = data.companyServiceDetail;
-    const {subscription, subscriptionLoc, oneTime} =
-      data.companyServicesAndStatus;
+    const {
+      subscription,
+      subscriptionLoc,
+      oneTime,
+      subscriptionRequestId,
+      subscriptionLocRequestId,
+      oneTimeRequestId,
+    } = data.companyServicesAndStatus;
     const arr = [];
+
     if (_.includes(serviceType, 'subscription')) {
       arr.push(
         <BtnContained
@@ -43,8 +50,11 @@ export const renderServiceTypes = (
           onPress={() => {
             if (subscription == 'active') {
               onPressSubscribe(companyId, 'subscription', 'CompanyIndex');
-            } else {
-              console.log('subscription status:', subscription);
+            } else if (subscription == 'pending') {
+              navigation.navigate('RequestIndex', {
+                customerRequestId: subscriptionRequestId,
+                companyId,
+              });
             }
           }}
           btnStyle={{
@@ -73,8 +83,11 @@ export const renderServiceTypes = (
                 serviceType: 'subscription with location',
                 mode: 'default',
               });
-            } else {
-              console.log('subscriptionLoc status:', subscriptionLoc);
+            } else if (subscriptionLoc == 'pending') {
+              navigation.navigate('RequestIndex', {
+                customerRequestId: subscriptionLocRequestId,
+                companyId,
+              });
             }
           }}
           btnStyle={{
@@ -101,7 +114,10 @@ export const renderServiceTypes = (
                 mode: 'default',
               });
             } else {
-              console.log('oneTime status:', oneTime);
+              navigation.navigate('RequestIndex', {
+                customerRequestId: oneTimeRequestId,
+                companyId,
+              });
             }
           }}
           btnStyle={{backgroundColor: 'navy'}}
@@ -111,6 +127,7 @@ export const renderServiceTypes = (
         />,
       );
     }
+
     return <View style={styles.serviceBtnContainer}>{arr}</View>;
   } else {
     return null;

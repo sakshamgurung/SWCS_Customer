@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import HomeIndex from './Home/HomeIndex';
+import HomeIndex from './HomeIndex';
 
 import CompanyIndex from '../Common/Company/CompanyIndex';
 import SubscriptionForm from '../Common/SubscriptionForm/SubscriptionForm';
