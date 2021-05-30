@@ -27,9 +27,6 @@ export class InboxIndex extends Component {
   }
 
   componentDidMount() {
-    const {thunkFetchNotificationList, thunkFetchScheduleList} = this.props;
-    thunkFetchNotificationList();
-    thunkFetchScheduleList();
     this.refresh = this.props.navigation.addListener('focus', this.remoteCall);
   }
 

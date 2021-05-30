@@ -7,7 +7,7 @@ import WasteDumpIndex from './WasteDumpIndex';
 const WasteDumpStack = createStackNavigator();
 
 const WasteDumpNav = () => (
-  <WasteDumpStack.Navigator>
+  <WasteDumpStack.Navigator headerMode="none">
     <WasteDumpStack.Screen name="WasteDumpIndex" component={WasteDumpIndex} />
   </WasteDumpStack.Navigator>
 );

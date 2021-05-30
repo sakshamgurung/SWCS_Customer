@@ -2,7 +2,6 @@ import _ from 'lodash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {actions as inboxActions, internalActions} from './inboxDuck';
-import {navigate} from '../navigationService';
 import {requestErrorLog} from 'util/log';
 import {Client, NotificationUrl, ScheduleUrl, WorkUrl} from 'api';
 

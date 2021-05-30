@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import {SafeAreaView, Text, View, ScrollView} from 'react-native';
 
+import _ from 'lodash';
+import MaterialCommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {CommonActions} from '@react-navigation/native';
+
 import {reduxStoreWrapper} from 'util/reduxStoreWrapper';
 import {Header} from 'components/header';
 import {CardSection} from 'components/card';
-import _ from 'lodash';
 
 function AboutWork({data}) {
   if (_.isEmpty(data)) {
@@ -59,11 +62,26 @@ export class Work extends Component {
     thunkFetchWork(workId);
   }
 
+  goBack = () => {
+    const {navigation} = this.props;
+    navigation.dispatch(CommonActions.goBack());
+  };
+
   render() {
     const {work} = this.props;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(62, 115, 222, 1)'}}>
-        <Header title="Work Detail" backIconContainerStyle={{flex: 0}} />
+        <Header
+          backIcon={
+            <MaterialCommIcon
+              name="arrow-left"
+              color="rgba(255, 255, 255, 1)"
+              size={20}
+            />
+          }
+          onPressBack={this.goBack}
+          title="Work Detail"
+        />
         <AboutWork data={work} />
       </SafeAreaView>
     );
