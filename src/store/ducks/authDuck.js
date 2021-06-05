@@ -7,6 +7,7 @@ export const types = {
   LOGIN_DATA_CHANGED: 'auth/loginDataChanged',
   SIGNUP_DATA_CHANGED: 'auth/signupDataChanged',
   TOGGLE_PASSWORD: 'auth/togglePassword',
+  CUSTOMER_DETAIL_CHANGED: 'auth/customerDetailChanged',
 
   LOGIN: 'auth/login',
   LOGIN_SUCCESS: 'auth/loginSuccess',
@@ -16,7 +17,16 @@ export const types = {
   SIGNUP_SUCCESS: 'auth/signupSuccess',
   SIGNUP_FAILED: 'auth/signupFailed',
 
+  POST_INITIAL_CUSTOMER_FORM: 'auth/postInitialCustomerForm',
+  POST_INITIAL_CUSTOMER_FORM_SUCCESS: 'auth/postInitialCustomerFormSuccess',
+  POST_INITIAL_CUSTOMER_FORM_FAILED: 'auth/postInitialCustomerFormFailed',
+
+  LOGOUT: 'auth/logout',
+  LOGOUT_SUCCESS: 'auth/logoutSuccess',
+  LOGOUT_FAILED: 'auth/logoutFailed',
+
   RESET: 'auth/reset',
+  RESET_CUSTOMER_DETAIL: 'auth/resetCustomerDetail',
 };
 
 export const initialState = {
@@ -25,6 +35,18 @@ export const initialState = {
   isPasswordShown: false,
   loginData: {email: '', password: ''},
   signupData: {email: '', password: '', mobileNo: ''},
+  customerDetail: {
+    customerType: '',
+    businessName: '',
+    province: '',
+    district: '',
+    city: '',
+    wardNo: '',
+    street: '',
+    firstName: '',
+    lastName: '',
+    contactNo: '',
+  }, //customerType: business, individual
   logMessage: {type: '', msg: ''}, //type = failed, success
 };
 
@@ -42,6 +64,13 @@ export default function reducer(state = initialState, action) {
       const signupData = _.cloneDeep(state.signupData);
       signupData[`${property}`] = value;
       return {...state, signupData};
+    }
+
+    case types.CUSTOMER_DETAIL_CHANGED: {
+      const {property, value} = action.payload;
+      const customerDetail = _.cloneDeep(state.customerDetail);
+      customerDetail[`${property}`] = value;
+      return {...state, customerDetail};
     }
 
     case types.TOGGLE_PASSWORD: {
@@ -80,6 +109,7 @@ export default function reducer(state = initialState, action) {
         loading: false,
         logMessage: {type: 'success', msg},
         signupData: {email: '', password: '', mobileNo: ''},
+        isPasswordShown: false,
       };
     }
 
@@ -92,13 +122,60 @@ export default function reducer(state = initialState, action) {
       };
     }
 
+    case types.POST_INITIAL_CUSTOMER_FORM: {
+      return {...state, loading: true};
+    }
+
+    case types.POST_INITIAL_CUSTOMER_FORM_SUCCESS: {
+      return {...state, loading: false, isLoggedIn: true};
+    }
+
+    case types.POST_INITIAL_CUSTOMER_FORM_FAILED: {
+      const msg = action.payload;
+      return {
+        ...state,
+        loading: false,
+        logMessage: {type: 'failed', msg},
+      };
+    }
+
+    case types.LOGOUT: {
+      return {...state, loading: true};
+    }
+
+    case types.LOGOUT_SUCCESS: {
+      return {...state, loading: false, isLoggedIn: false};
+    }
+
+    case types.LOGOUT_FAILED: {
+      const {msg} = action.payload;
+      return {
+        ...state,
+        loading: false,
+        isLoggedIn: false,
+        logMessage: {type: 'failed', msg},
+      };
+    }
+
     case types.RESET: {
       return {
         ...state,
+        loading: false,
         isPasswordShown: false,
         logMessage: {type: '', msg: ''},
         loginData: {email: '', password: ''},
         signupData: {email: '', password: '', mobileNo: ''},
+      };
+    }
+
+    case types.RESET_CUSTOMER_DETAIL: {
+      const customerDetail = _.cloneDeep(state.customerDetail);
+      for (let property in customerDetail) {
+        customerDetail[property] = '';
+      }
+      return {
+        ...state,
+        customerDetail,
       };
     }
 
@@ -130,6 +207,10 @@ const signupDataChanged = signupData => {
   return {type: types.SIGNUP_DATA_CHANGED, payload: signupData};
 };
 
+const customerDetailChanged = customerDetail => {
+  return {type: types.CUSTOMER_DETAIL_CHANGED, payload: customerDetail};
+};
+
 const togglePassword = () => {
   return {type: types.TOGGLE_PASSWORD};
 };
@@ -158,8 +239,36 @@ const signupFailed = msg => {
   return {type: types.SIGNUP_FAILED, payload: msg};
 };
 
+const postInitialCustomerForm = () => {
+  return {type: types.POST_INITIAL_CUSTOMER_FORM};
+};
+
+const postInitialCustomerFormSuccess = () => {
+  return {type: types.POST_INITIAL_CUSTOMER_FORM_SUCCESS};
+};
+
+const postInitialCustomerFormFailed = failedData => {
+  return {type: types.POST_INITIAL_CUSTOMER_FORM_FAILED, payload: failedData};
+};
+
+const logout = () => {
+  return {type: types.LOGOUT};
+};
+
+const logoutSuccess = () => {
+  return {type: types.LOGOUT_SUCCESS};
+};
+
+const logoutFailed = failedData => {
+  return {type: types.LOGOUT_FAILED, payload: failedData};
+};
+
 const reset = () => {
   return {type: types.RESET};
+};
+
+const resetCustomerDetail = () => {
+  return {type: types.RESET_CUSTOMER_DETAIL};
 };
 
 export const internalActions = {
@@ -169,12 +278,20 @@ export const internalActions = {
   signup,
   signupSuccess,
   signupFailed,
+  postInitialCustomerForm,
+  postInitialCustomerFormSuccess,
+  postInitialCustomerFormFailed,
+  logout,
+  logoutSuccess,
+  logoutFailed,
 };
 
 export const actions = {
   storeDeviceToken,
   loginDataChanged,
   signupDataChanged,
+  customerDetailChanged,
   togglePassword,
   reset,
+  resetCustomerDetail,
 };

@@ -7,6 +7,7 @@ import {actions as homeActions} from 'store/ducks/homeThunk';
 import {actions as inboxActions} from 'store/ducks/inboxThunk';
 import {actions as exploreActions} from 'store/ducks/exploreThunk';
 import {actions as wasteDumpActions} from 'store/ducks/wasteDumpThunk';
+import {actions as menuActions} from 'store/ducks/menuThunk';
 
 export function reduxStoreWrapper(WrappedComponent, reducerName) {
   const mapStateToProps = state => {
@@ -30,6 +31,9 @@ export function reduxStoreWrapper(WrappedComponent, reducerName) {
         break;
       case 'wasteDump':
         actions = wasteDumpActions;
+        break;
+      case 'menu':
+        actions = {...authActions, ...menuActions};
         break;
       default:
         actions = undefined;

@@ -35,6 +35,12 @@ export class Login extends Component {
     }
   };
 
+  login = () => {
+    const {thunkLogin, reset} = this.props;
+    thunkLogin();
+    reset();
+  };
+
   renderLogMessage = logMessage => {
     const {type, msg} = logMessage;
     if (_.isEmpty(type)) {
@@ -47,7 +53,7 @@ export class Login extends Component {
   render() {
     const {navigation} = this.props;
     const {loginData, isPasswordShown, logMessage} = this.props;
-    const {loginDataChanged, togglePassword, thunkLogin} = this.props;
+    const {loginDataChanged, togglePassword} = this.props;
     return (
       <View>
         <Text style={typography.sectionTitle}> Login </Text>
@@ -93,7 +99,7 @@ export class Login extends Component {
           />
         </View>
 
-        <BtnContained onPress={thunkLogin} text="Login" />
+        <BtnContained onPress={this.login} text="Login" />
         {this.renderLogMessage(logMessage)}
 
         <BtnContained

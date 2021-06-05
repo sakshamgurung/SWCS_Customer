@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, View, Switch} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Switch,
+  BackHandler,
+} from 'react-native';
 
 import _ from 'lodash';
 
@@ -9,6 +16,11 @@ import {BtnContained} from 'components/button';
 import {typography} from 'lib/res';
 
 export class Signup extends Component {
+  componentWillUnmount() {
+    const {reset} = this.props;
+    reset();
+  }
+
   renderLogMessage = logMessage => {
     const {type, msg} = logMessage;
     if (_.isEmpty(type)) {
@@ -20,9 +32,14 @@ export class Signup extends Component {
     }
   };
 
+  singUp = () => {
+    const {thunkSignup} = this.props;
+    thunkSignup();
+  };
+
   render() {
     const {signupData, isPasswordShown, logMessage} = this.props;
-    const {signupDataChanged, togglePassword, thunkSignup} = this.props;
+    const {signupDataChanged, togglePassword} = this.props;
     return (
       <View>
         <Text style={typography.sectionTitle}> Sign Up </Text>
@@ -31,7 +48,7 @@ export class Signup extends Component {
           <TextInput
             placeholder="email"
             placeholderTextColor="grey"
-            keyboardType="default"
+            keyboardType="visible-password"
             style={styles.input}
             onChangeText={text =>
               signupDataChanged({property: 'email', value: text})
@@ -58,7 +75,7 @@ export class Signup extends Component {
             autoCorrect={false}
             placeholder="password"
             placeholderTextColor="grey"
-            keyboardType="default"
+            keyboardType="visible-password"
             secureTextEntry={!isPasswordShown}
             style={styles.input}
             onChangeText={text =>
@@ -79,7 +96,7 @@ export class Signup extends Component {
             value={isPasswordShown}
           />
         </View>
-        <BtnContained onPress={thunkSignup} text="Sign Up" />
+        <BtnContained onPress={this.singUp} text="Sign Up" />
         {this.renderLogMessage(logMessage)}
       </View>
     );

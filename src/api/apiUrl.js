@@ -22,6 +22,15 @@ export const CustomerRequestUrl = {
   delete: id => `/customer-requests/${id}`,
 };
 
+export const CustomerUrl = {
+  post: () => `/customers`,
+  getAll: type => `/customers/${type}`, //idArray[] of customer
+  getById: (type, id) => `/customers/${type}/${id}`,
+  getByRef: (type, ref, id) => `/customers/${type}/${ref}/${id}`,
+  put: (type, id) => `/customers/${type}/${id}`,
+  delete: id => `/customers/${id}`,
+};
+
 export const SubscriptionUrl = {
   post: () => `/subscriptions`,
   getSubscription: id => `/subscriptions/customer/${id}`,
