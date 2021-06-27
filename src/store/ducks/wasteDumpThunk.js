@@ -12,11 +12,10 @@ const thunkFetchWasteDumpList = () => async (dispatch, getState) => {
 
     const wasteDumpRes = await Client.get(
       WasteDumpUrl.getByRef('customerId', customerId),
-      {params: {isCollected: true}},
+      {params: {isCollected: false}},
     );
 
     const wasteDumpList = wasteDumpRes.data;
-
     dispatch(internalActions.fetchWasteDumpListSuccess({wasteDumpList}));
   } catch (err) {
     requestErrorLog(err);

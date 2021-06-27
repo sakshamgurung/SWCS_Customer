@@ -6,7 +6,7 @@ export const types = {
 
 export const initialState = {
   loading: false,
-  wasteDumpList: {},
+  wasteDumpList: [],
   logMessage: {type: '', msg: ''}, //type = failed, success
 };
 

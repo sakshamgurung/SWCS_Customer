@@ -23,6 +23,10 @@ export const types = {
   POST_CUSTOMER_REQUEST_SUCCESS: 'home/postCustomerRequestSuccess',
   POST_CUSTOMER_REQUEST_FAILED: 'home/postCustomerRequestFailed',
 
+  UNSUBSCRIBE: 'home/unsubscribe',
+  UNSUBSCRIBE_SUCCESS: 'home/unsubscribeSuccess',
+  UNSUBSCRIBE_FAILED: 'home/unsubscribeFailed',
+
   UPDATE_CUSTOMER_REQUEST: 'home/updateCustomerRequest',
   UPDATE_CUSTOMER_REQUEST_SUCCESS: 'home/updateCustomerRequestSuccess',
   UPDATE_CUSTOMER_REQUEST_FAILED: 'home/updateCustomerRequestFailed',
@@ -171,6 +175,19 @@ export default function reducer(state = initialState, action) {
 
     case types.POST_CUSTOMER_REQUEST_FAILED: {
       const msg = action.payload;
+      return {...state, loading: false, logMessage: {type: 'failed', msg}};
+    }
+
+    case types.UNSUBSCRIBE: {
+      return {...state, loading: true};
+    }
+
+    case types.UNSUBSCRIBE_SUCCESS: {
+      return {...state, loading: false};
+    }
+
+    case types.UNSUBSCRIBE_FAILED: {
+      const {msg} = action.payload;
       return {...state, loading: false, logMessage: {type: 'failed', msg}};
     }
 
@@ -381,6 +398,18 @@ const postCustomerRequestFailed = failedData => {
   return {type: types.POST_CUSTOMER_REQUEST_FAILED, payload: failedData};
 };
 
+const unsubscribe = () => {
+  return {type: types.UNSUBSCRIBE};
+};
+
+const unsubscribeSuccess = successData => {
+  return {type: types.UNSUBSCRIBE_SUCCESS, payload: successData};
+};
+
+const unsubscribeFailed = failedData => {
+  return {type: types.UNSUBSCRIBE_FAILED, payload: failedData};
+};
+
 const updateCustomerRequest = () => {
   return {type: types.UPDATE_CUSTOMER_REQUEST};
 };
@@ -481,6 +510,10 @@ export const internalActions = {
   postCustomerRequest,
   postCustomerRequestSuccess,
   postCustomerRequestFailed,
+
+  unsubscribe,
+  unsubscribeSuccess,
+  unsubscribeFailed,
 
   updateCustomerRequest,
   updateCustomerRequestSuccess,

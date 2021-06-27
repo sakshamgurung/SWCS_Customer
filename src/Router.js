@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import {actions as authActions} from 'store/ducks/authDuck';
 import {navigationRef} from 'store/navigationService';
 import AuthNav from 'screens/Auth/AuthNav';
-import ExploreNav from 'screens/Explore/ExploreNav';
 import HomeNav from 'screens/Home/HomeNav';
 import InboxNav from 'screens/Inbox/InboxNav';
 import MenuNav from 'screens/Menu/MenuNav';
@@ -45,7 +44,6 @@ const MainBottomTabNav = () => (
         tabBarVisible: getTabBarVisibility(route),
       })}
     />
-    <MainBottomTab.Screen name="ExploreNav" component={ExploreNav} />
     <MainBottomTab.Screen name="InboxNav" component={InboxNav} />
     <MainBottomTab.Screen name="WasteDumpNav" component={WasteDumpNav} />
     <MainBottomTab.Screen name="MenuNav" component={MenuNav} />

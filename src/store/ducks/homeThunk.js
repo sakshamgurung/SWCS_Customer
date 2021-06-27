@@ -211,6 +211,33 @@ const thunkPostCustomerRequest =
     }
   };
 
+const thunkUnsubscribe = () => async (dispatch, getState) => {
+  try {
+    dispatch(internalActions.unsubscribe());
+    const customerId = await AsyncStorage.getItem('customerId');
+    const companyServicesAndStatus = _.cloneDeep(
+      getState().home.listItemData.companyServicesAndStatus,
+    );
+    const companyDetail = _.cloneDeep(
+      getState().home.listItemData.companyDetail,
+    );
+
+    const {subscriptionId} = companyServicesAndStatus;
+    const config = {
+      data: {
+        customerId,
+        companyId: companyDetail.companyId._id,
+      },
+    };
+
+    await Client.delete(SubscriptionUrl.delete(subscriptionId), config);
+    dispatch(internalActions.unsubscribeSuccess());
+  } catch (err) {
+    requestErrorLog(err);
+    dispatch(internalActions.unsubscribeFailed({msg: 'unsubscribe failed'}));
+  }
+};
+
 const thunkUpdateCustomerRequest = () => async (dispatch, getState) => {
   try {
     dispatch(internalActions.updateCustomerRequest());
@@ -359,7 +386,7 @@ const thunkFetchMapProfile = companyId => async (dispatch, getState) => {
         data: customerUsedGeoObjectRes.data[0],
       }),
     );
-    if (!_.isEmpty(wasteDumpRes)) {
+    if (!_.isEmpty(wasteDumpRes.data)) {
       dispatch(
         internalActions.fetchMapProfileSuccess({
           property: 'bottomSheetData',
@@ -520,6 +547,7 @@ export const actions = {
   thunkFetchListItemData,
   thunkFetchGeoObjects,
   thunkPostCustomerRequest,
+  thunkUnsubscribe,
   thunkUpdateCustomerRequest,
   thunkDeleteCustomerRequest,
   thunkFetchMapProfile,

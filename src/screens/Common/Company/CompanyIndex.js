@@ -29,7 +29,7 @@ export class CompanyIndex extends Component {
   };
 
   requestSubscribe = () => {
-    const {navigation, thunkPostCustomerRequest} = this.props;
+    const {navigation, thunkPostCustomerRequest, thunkUnsubscribe} = this.props;
     const {route, listItemData} = this.props;
 
     const {companyId} = route.params;
@@ -44,6 +44,9 @@ export class CompanyIndex extends Component {
         customerRequestId: subscriptionRequestId,
         companyId,
       });
+    } else if (subscription == 'unsubscribe') {
+      thunkUnsubscribe();
+      this.remoteCall();
     }
   };
 
