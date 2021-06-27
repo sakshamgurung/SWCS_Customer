@@ -40,7 +40,6 @@ export default function WasteDumpList({data, refreshData}) {
   const Item = ({item, index}) => {
     const {companyId, companyDetail, dumpedWaste, addedDate} = item;
     const {companyName} = companyDetail;
-    console.log('item:', item);
     return (
       <CardSection>
         <TouchableOpacity

@@ -34,7 +34,6 @@ export const renderServiceTypes = (
     const {serviceType} = data.companyServiceDetail;
     const {subscription, subscriptionLoc, oneTime} =
       data.companyServicesAndStatus;
-    console.log('data.companyServicesAndStatus', data.companyServicesAndStatus);
     const arr = [];
 
     if (_.includes(serviceType, 'subscription')) {

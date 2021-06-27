@@ -79,7 +79,6 @@ const thunkEditCustomerDetail = () => async (dispatch, getState) => {
       'lastName',
     ]);
 
-    console.log('update customer Detail', customerDetail);
     await Client.put(
       CustomerUrl.put('customer-detail', customerDetailId),
       customerDetail,
