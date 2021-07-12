@@ -51,6 +51,7 @@ export const initialState = {
 };
 
 export default function reducer(state = initialState, action) {
+  console.log('[Action]:', action);
   switch (action.type) {
     case types.LOGIN_DATA_CHANGED: {
       const {property, value} = action.payload;

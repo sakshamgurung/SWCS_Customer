@@ -14,8 +14,8 @@ const thunkLogin = () => async (dispatch, getState) => {
     let firstTimeLogin = true;
     const deviceId = await AsyncStorage.getItem('deviceToken');
 
-    //const loginData = _.cloneDeep(getState().auth.loginData);
-    const loginData = loginInfo;
+    const loginData = _.cloneDeep(getState().auth.loginData);
+    // const loginData = loginInfo;
     loginData.deviceId = deviceId;
 
     const loginRes = await Client.post(AccountUrl.login('customer'), {
@@ -35,8 +35,10 @@ const thunkLogin = () => async (dispatch, getState) => {
     firstTimeLogin = authTokenDecoded.firstTimeLogin;
 
     if (firstTimeLogin == true) {
+      dispatch(actions.reset());
       navigate('InitialCustomerForm');
     } else {
+      dispatch(actions.reset());
       dispatch(internalActions.loginSuccess());
     }
   } catch (err) {
@@ -104,6 +106,7 @@ const thunkPostInitialCustomerForm = () => async (dispatch, getState) => {
 
     await Client.post(CustomerUrl.post(), {customerDetail});
     dispatch(internalActions.postInitialCustomerFormSuccess());
+    dispatch(actions.resetCustomerDetail());
   } catch (err) {
     requestErrorLog(err);
     dispatch(
@@ -134,6 +137,7 @@ const thunkLogout = () => async (dispatch, getState) => {
     await AsyncStorage.setItem('customerId', '');
     await AsyncStorage.setItem('email', '');
 
+    dispatch(actions.resetCustomerDetail());
     dispatch(internalActions.logoutSuccess());
   } catch (err) {
     requestErrorLog(err);

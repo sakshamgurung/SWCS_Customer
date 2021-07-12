@@ -36,9 +36,8 @@ export class Login extends Component {
   };
 
   login = () => {
-    const {thunkLogin, reset} = this.props;
+    const {thunkLogin} = this.props;
     thunkLogin();
-    reset();
   };
 
   renderLogMessage = logMessage => {
@@ -75,6 +74,7 @@ export class Login extends Component {
           <Text style={typography.sectionTitle}> Password </Text>
           <TextInput
             autoCorrect={false}
+            autoCompleteType="off"
             placeholder="password"
             placeholderTextColor="grey"
             keyboardType="default"

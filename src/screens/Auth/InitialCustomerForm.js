@@ -24,9 +24,10 @@ export class InitialCustomerForm extends Component {
   customerTypeRadioBtnOptions = [
     {
       title: 'business',
+      value: 'business',
       desc: 'includes shops, hotel, restaurant, schools...',
     },
-    {title: 'individual', desc: 'includes households...'},
+    {title: 'individual', value: 'individual', desc: 'includes households...'},
   ];
 
   componentDidMount() {
@@ -37,9 +38,7 @@ export class InitialCustomerForm extends Component {
   }
 
   componentWillUnmount() {
-    const {resetCustomerDetail} = this.props;
     this.backHandler.remove();
-    resetCustomerDetail();
   }
 
   goBack = () => {
