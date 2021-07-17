@@ -36,7 +36,7 @@ export const initialState = {
   loginData: {email: '', password: ''},
   signupData: {email: '', password: '', mobileNo: ''},
   customerDetail: {
-    customerType: '',
+    customerType: 'business',
     businessName: '',
     province: '',
     district: '',
@@ -68,6 +68,7 @@ export default function reducer(state = initialState, action) {
     }
 
     case types.CUSTOMER_DETAIL_CHANGED: {
+      console.log(' customer data change ', action.payload);
       const {property, value} = action.payload;
       const customerDetail = _.cloneDeep(state.customerDetail);
       customerDetail[`${property}`] = value;

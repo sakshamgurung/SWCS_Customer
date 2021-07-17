@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, SafeAreaView} from 'react-native';
+import {Text, SafeAreaView, View} from 'react-native';
 
 import _ from 'lodash';
 
@@ -33,8 +33,10 @@ export class CompanyIndex extends Component {
     const {route, listItemData} = this.props;
 
     const {companyId} = route.params;
-    const {subscription, subscriptionRequestId} =
-      listItemData.companyServicesAndStatus;
+    const {
+      subscription,
+      subscriptionRequestId,
+    } = listItemData.companyServicesAndStatus;
 
     if (subscription == 'active') {
       thunkPostCustomerRequest(companyId, 'subscription');
@@ -55,8 +57,10 @@ export class CompanyIndex extends Component {
     const {route, listItemData} = this.props;
 
     const {companyId} = route.params;
-    const {subscriptionLoc, subscriptionLocRequestId} =
-      listItemData.companyServicesAndStatus;
+    const {
+      subscriptionLoc,
+      subscriptionLocRequestId,
+    } = listItemData.companyServicesAndStatus;
 
     if (subscriptionLoc == 'active') {
       navigation.navigate('SubscriptionForm', {
@@ -108,6 +112,7 @@ export class CompanyIndex extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(62, 115, 222, 1)'}}>
         {renderHeader(title, this.goBack)}
+        <View style={{marginTop: 30}}></View>
         {renderServiceTypes(
           listItemData,
           this.requestSubscribe,

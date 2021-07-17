@@ -1,15 +1,13 @@
 import React, {useState, useCallback} from 'react';
 import {Text, View, FlatList, TouchableOpacity} from 'react-native';
-
+import isEmpty from '../../components/isEmpty';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {Card, CardSection} from 'components/card';
 
-export default function ScheduleList({data}) {
+export default function ScheduleList({data, isListEmpty}) {
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
-
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -87,7 +85,7 @@ export default function ScheduleList({data}) {
     return <Item item={item} index={index} />;
   };
 
-  return (
+  return !isListEmpty ? (
     <FlatList
       refreshing={refreshing}
       onRefresh={onRefresh}
@@ -95,5 +93,16 @@ export default function ScheduleList({data}) {
       renderItem={renderItem}
       keyExtractor={item => item._id}
     />
+  ) : (
+    <View
+      style={{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 20,
+      }}>
+      <Text style={{fontStyle: 'italic', color: 'white'}}>List is empty</Text>
+    </View>
   );
 }

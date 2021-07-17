@@ -73,7 +73,7 @@ export const WorkUrl = {
   getAll: (role, id) => `/${role}/${id}/works`,
   getById: id => `/works/${id}`,
   getByRef: (ref, id) => `/works/${ref}/${id}`,
-  put: id => `/wokrs/${id}`,
+  put: id => `/works/${id}`,
   delete: id => `/works/${id}`,
 };
 

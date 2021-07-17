@@ -8,7 +8,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import _ from 'lodash';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {actions as authActions} from 'store/ducks/authDuck';
 import {navigationRef} from 'store/navigationService';
 import AuthNav from 'screens/Auth/AuthNav';
@@ -36,17 +37,57 @@ const getTabBarVisibility = route => {
 };
 
 const MainBottomTabNav = () => (
-  <MainBottomTab.Navigator>
+  <MainBottomTab.Navigator
+    screenOptions={({route}) => ({
+      tabBarIcon: ({focused, color, size}) => {
+        let iconName;
+        console.log(route.name, route.name);
+        if (route.name === 'Home') {
+          iconName = focused ? 'md-home' : 'md-home-outline';
+        } else if (route.name === 'Inbox') {
+          iconName = focused ? 'mail' : 'mail-outline';
+        } else if (route.name === 'Dumps') {
+          iconName = focused ? 'trash' : 'trash';
+        } else if (route.name === 'Menu') {
+          iconName = focused ? 'person' : 'person-outline';
+        }
+
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+    })}
+    tabBarOptions={{
+      tabStyle: {
+        backgroundColor: '#1B7AB5',
+        color: 'white',
+      },
+      showLabel: false,
+      activeTintColor: 'white',
+      inactiveTintColor: 'rgba(255,255,255,0.6)',
+    }}>
     <MainBottomTab.Screen
-      name="HomeNav"
+      name="Home"
       component={HomeNav}
+      screenOptions={{headerShown: false}}
       options={({route}) => ({
         tabBarVisible: getTabBarVisibility(route),
       })}
     />
-    <MainBottomTab.Screen name="InboxNav" component={InboxNav} />
-    <MainBottomTab.Screen name="WasteDumpNav" component={WasteDumpNav} />
-    <MainBottomTab.Screen name="MenuNav" component={MenuNav} />
+    <MainBottomTab.Screen
+      options={{headerShown: false}}
+      name="Inbox"
+      screenOptions={{headerShown: false}}
+      component={InboxNav}
+    />
+    <MainBottomTab.Screen
+      screenOptions={{headerShown: false}}
+      name="Dumps"
+      component={WasteDumpNav}
+    />
+    <MainBottomTab.Screen
+      screenOptions={{headerShown: false}}
+      name="Menu"
+      component={MenuNav}
+    />
   </MainBottomTab.Navigator>
 );
 
@@ -75,4 +116,7 @@ const mapDispatchToProps = dispatch => {
   return {...bindActionCreators(authActions, dispatch)};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Router);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Router);

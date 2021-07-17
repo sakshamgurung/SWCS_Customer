@@ -12,6 +12,7 @@ export default function CardSection({children, cardSectionStyle}) {
 const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: 'white',
+    width: '93%',
     borderRadius: 5,
     marginLeft: 5,
     marginRight: 5,
