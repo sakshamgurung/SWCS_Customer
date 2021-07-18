@@ -148,7 +148,7 @@ export default function SubscriptionList({data}) {
     return <Item item={item} index={index} />;
   };
 
-  console.log(' subscription list here ', data);
+  // console.log(' subscription list here ', data);
 
   return (
     <FlatList

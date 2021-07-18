@@ -43,7 +43,7 @@ export class InboxIndex extends Component {
 
   render() {
     const {selectedTab, notificationList, scheduleList} = this.props;
-    console.log('schedule list here ', scheduleList);
+    // console.log('schedule list here ', scheduleList);
     const isListEmpty = isEmpty(scheduleList);
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(62, 115, 222, 1)'}}>

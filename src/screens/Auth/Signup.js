@@ -59,7 +59,7 @@ export class Signup extends Component {
       signupBtn = <LoaderButton />;
     }
 
-    console.log(' signup loader ', this.props.loading);
+    // console.log(' signup loader ', this.props.loading);
 
     return (
       <ImageBackground

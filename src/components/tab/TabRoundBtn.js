@@ -18,7 +18,7 @@ function RoundTabBtn({text, onPress}) {
   /* <Chip icon="info" onPress={() => console.log('Pressed')}>Example Chip</Chip> */
 }
 export default function TabRoundBtn({data, selectedTab}) {
-  console.log(' top datas ', data, selectedTab);
+  // console.log(' top datas ', data, selectedTab);
 
   return (
     <>

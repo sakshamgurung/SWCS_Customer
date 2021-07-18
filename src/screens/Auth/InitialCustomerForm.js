@@ -99,7 +99,7 @@ export class InitialCustomerForm extends Component {
   render() {
     const {customerDetail} = this.props;
     const {customerDetailChanged} = this.props;
-    console.log('customerDetail', customerDetail);
+    // console.log('customerDetail', customerDetail);
 
     let SubmitButton = (
       <MainButton

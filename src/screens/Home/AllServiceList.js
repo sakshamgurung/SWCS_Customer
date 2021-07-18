@@ -152,7 +152,7 @@ export default function AllServiceList({data, refreshData}) {
   );
 
   const renderItem = ({item, index}) => {
-    console.log('item', item);
+    // console.log('item', item);
     return <Item item={item} index={index} />;
   };
 

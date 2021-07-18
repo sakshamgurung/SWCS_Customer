@@ -8,7 +8,7 @@ import RadioForm, {
 } from 'react-native-simple-radio-button';
 
 const Inputs = props => {
-  console.log(' props ', props);
+  // console.log(' props ', props);
   let InputElement;
   switch (props.elementType) {
     case 'input':
@@ -20,6 +20,9 @@ const Inputs = props => {
                 ? props.elementConfig.keytype
                 : 'default'
             }
+            autoCorrect={false}
+            autoCapitalize="none"
+            autoCompleteType="off"
             secureTextEntry={props.secureTextEntry}
             value={props.value}
             onChangeText={props.onChangeText}
